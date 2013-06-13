@@ -1,0 +1,15 @@
+{
+    "name" : "ivan-novakov/php-openid-connect-client",
+
+    "require" : {
+        "php" : ">=5.3.3",
+        "zendframework/zendframework" : ">=2.2.1"
+    },
+
+    "autoload" : {
+        "psr-0" : {
+            "InoOicClient\\" : "src/"
+        }
+    }
+
+}
