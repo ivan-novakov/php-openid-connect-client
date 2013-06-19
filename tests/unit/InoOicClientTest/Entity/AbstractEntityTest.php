@@ -11,6 +11,7 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        include_once TESTS_ROOT . '/_files/AbstractEntitySubclass.php';
         $this->entity = $this->getMockForAbstractClass('InoOicClient\Entity\AbstractEntity');
     }
 
@@ -81,6 +82,33 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         );
         $this->entity->fromArray($properties);
         $this->assertSame($properties, $this->entity->toArray());
+    }
+
+
+    public function testSetUnknownProperty()
+    {
+        $this->setExpectedException('InoOicClient\Entity\Exception\UnknownPropertyException');
+        
+        $entity = new \AbstractEntitySubclass();
+        $entity->setBar('something');
+    }
+
+
+    public function testGetUnknownProperty()
+    {
+        $this->setExpectedException('InoOicClient\Entity\Exception\UnknownPropertyException');
+        
+        $entity = new \AbstractEntitySubclass();
+        $entity->getBar();
+    }
+    
+    
+    public function testSetKnownProperty()
+    {
+        $value = 'testvalue';
+        $entity = new \AbstractEntitySubclass();
+        $entity->setFoo($value);
+        $this->assertSame($value, $entity->getFoo());
     }
 
 

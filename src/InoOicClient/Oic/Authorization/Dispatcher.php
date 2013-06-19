@@ -6,6 +6,9 @@ use InoOicClient\Oic\Authorization\State\Storage\StorageInterface;
 use InoOicClient\Oic\Authorization\State\StateFactoryInterface;
 
 
+/**
+ * Handles authorization requests and responses.
+ */
 class Dispatcher
 {
 

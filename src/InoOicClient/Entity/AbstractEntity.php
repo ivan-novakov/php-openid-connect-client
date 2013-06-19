@@ -20,6 +20,12 @@ abstract class AbstractEntity
      */
     protected $propertyMapper;
 
+    /**
+     * List of properties allowed to be set for the entity.
+     * @var array|null
+     */
+    protected $allowedProperties;
+
 
     /**
      * Returns the property mapper.
@@ -91,10 +97,11 @@ abstract class AbstractEntity
         $values = array();
         foreach ($this->getProperties() as $name => $value) {
             $getterName = $this->createGetterName($name);
-            $values[$name] = call_user_func_array(array(
-                $this,
-                $getterName
-            ), array());
+            $values[$name] = call_user_func_array(
+                array(
+                    $this,
+                    $getterName
+                ), array());
         }
         
         return $values;
@@ -104,7 +111,8 @@ abstract class AbstractEntity
     public function __call($methodName, array $arguments)
     {
         if (preg_match('/^get(\w+)$/', $methodName, $matches)) {
-            $propertyName = $this->getPropertyMapper()->camelCaseToProperty($matches[1]);
+            $propertyName = $this->getPropertyMapper()
+                ->camelCaseToProperty($matches[1]);
             return $this->getProperty($propertyName);
         }
         
@@ -114,15 +122,17 @@ abstract class AbstractEntity
             
             $updateMethod = 'update' . $methodFragment;
             if (method_exists($this, $updateMethod)) {
-                $value = call_user_func_array(array(
-                    $this,
-                    $updateMethod
-                ), array(
-                    $value
-                ));
+                $value = call_user_func_array(
+                    array(
+                        $this,
+                        $updateMethod
+                    ), array(
+                        $value
+                    ));
             }
             
-            $propertyName = $this->getPropertyMapper()->camelCaseToProperty($methodFragment);
+            $propertyName = $this->getPropertyMapper()
+                ->camelCaseToProperty($methodFragment);
             return call_user_func_array(array(
                 $this,
                 'setProperty'
@@ -144,7 +154,12 @@ abstract class AbstractEntity
      */
     protected function setProperty($name, $value)
     {
-        $this->getProperties()->offsetSet($name, $value);
+        if (! $this->isAllowedProperty($name)) {
+            throw new Exception\UnknownPropertyException($name);
+        }
+        
+        $this->getProperties()
+            ->offsetSet($name, $value);
     }
 
 
@@ -156,6 +171,10 @@ abstract class AbstractEntity
      */
     protected function getProperty($name)
     {
+        if (! $this->isAllowedProperty($name)) {
+            throw new Exception\UnknownPropertyException($name);
+        }
+        
         $properties = $this->getProperties();
         if ($properties->offsetExists($name)) {
             return $properties->offsetGet($name);
@@ -173,7 +192,8 @@ abstract class AbstractEntity
      */
     protected function createSetterName($propertyName)
     {
-        return sprintf("set%s", $this->getPropertyMapper()->propertyToCamelCase($propertyName));
+        return sprintf("set%s", $this->getPropertyMapper()
+            ->propertyToCamelCase($propertyName));
     }
 
 
@@ -185,6 +205,17 @@ abstract class AbstractEntity
      */
     protected function createGetterName($propertyName)
     {
-        return sprintf("get%s", $this->getPropertyMapper()->propertyToCamelCase($propertyName));
+        return sprintf("get%s", $this->getPropertyMapper()
+            ->propertyToCamelCase($propertyName));
+    }
+
+
+    protected function isAllowedProperty($propertyName)
+    {
+        if (is_array($this->allowedProperties) && ! in_array($propertyName, $this->allowedProperties)) {
+            return false;
+        }
+        
+        return true;
     }
 }

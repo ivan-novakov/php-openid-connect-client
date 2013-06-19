@@ -2,12 +2,46 @@
 
 namespace InoOicClient\Oic\Authorization;
 
+use Zend\Uri\Uri;
+
+
+/**
+ * Creates an URI based on the provided authorization request.
+ */
 class UriGenerator
 {
-    
-    
+
+
+    /**
+     * Generates an URI representing the authorization request.
+     * 
+     * @param Request $request
+     * @return string
+     */
     public function createAuthorizationRequestUri(Request $request)
     {
+        /* @var $clientInfo \InoOicClient\Client\ClientInfo */
+        $clientInfo = $request->getClientInfo();
+        /* @var $serverInfo \InoOicClient\Server\ServerInfo */
+        $serverInfo = $request->getServerInfo();
         
+        $uri = new Uri($serverInfo->getAuthorizationEndpoint());
+        
+        $params = array(
+            Param::CLIENT_ID => $clientInfo->getClientId(),
+            Param::REDIRECT_URI => $clientInfo->getRedirectUri(),
+            Param::RESPONSE_TYPE => $this->arrayToSpaceDelimited($request->getResponseType()),
+            Param::SCOPE => $this->arrayToSpaceDelimited($request->getScope()),
+            Param::STATE => $request->getState()
+        );
+        $uri->setQuery($params);
+        
+        return $uri->toString();
+    }
+
+
+    protected function arrayToSpaceDelimited(array $list)
+    {
+        return implode(' ', $list);
     }
 }

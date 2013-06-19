@@ -2,6 +2,8 @@
 
 namespace InoOicClient\Oic\Authorization;
 
+use InoOicClient\Server\ServerInfo;
+use InoOicClient\Client\ClientInfo;
 use InoOicClient\Entity\AbstractEntity;
 use InoOicClient\Util\ArgumentNormalizer;
 
@@ -9,22 +11,29 @@ use InoOicClient\Util\ArgumentNormalizer;
 /**
  * Authorization request.
  * 
- * @method void setEndpointUri(string $endpointUri)
- * @method void setClientId(string $clientId)
+ * @method void setClientInfo(\InoOicClient\Client\ClientInfo $clientInfo)
+ * @method void setServerInfo(\InoOicClient\Server\ServerInfo $serverInfo)
  * @method void setResponseType(string|array $responseType)
- * @method void setRedirectUri(string $redirectUri)
  * @method void setScope(mixed $scope)
  * @method void setState(string $state)
  * 
- * @method string getEndpointUri()
+ * @method InoOicClient\Client\ClientInfo getClientInfo()
+ * @method InoOicClient\Server\ServerInfo getServerInfo()
  * @method array getResponseType()
- * @method string getClientId()
- * @method string getRedirectUri()
  * @method array getScope()
  * @method string getState()
  */
 class Request extends AbstractEntity
 {
+
+    protected $allowedProperties = array(
+        'client_info',
+        'server_info',
+        Param::RESPONSE_TYPE,
+        Param::SCOPE,
+        Param::STATE,
+        Param::NONCE
+    );
 
 
     /**
@@ -37,12 +46,12 @@ class Request extends AbstractEntity
      * @param string $state
      * @param array $extraParams
      */
-    public function __construct($endpointUri, $responseType, $clientId, $redirectUri, $scope, $state = null, array $extraParams = array())
+    public function __construct(ClientInfo $clientInfo, ServerInfo $serverInfo, $responseType, $scope, $state = null, 
+        array $extraParams = array())
     {
-        $this->setEndpointUri($endpointUri);
+        $this->setClientInfo($clientInfo);
+        $this->setServerInfo($serverInfo);
         $this->setResponseType($responseType);
-        $this->setClientId($clientId);
-        $this->setRedirectUri($redirectUri);
         $this->setScope($scope);
         $this->setState($state);
         
