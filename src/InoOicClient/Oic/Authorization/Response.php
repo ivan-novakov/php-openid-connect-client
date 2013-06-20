@@ -17,16 +17,8 @@ use InoOicClient\Entity\AbstractEntity;
 class Response extends AbstractEntity
 {
 
-
-    /**
-     * Constructor.
-     * 
-     * @param string $code
-     * @param string $state
-     */
-    public function __construct($code, $state = null)
-    {
-        $this->setCode($code);
-        $this->setState($state);
-    }
+    protected $allowedProperties = array(
+        'code',
+        'state'
+    );
 }

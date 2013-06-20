@@ -2,8 +2,8 @@
 
 namespace InoOicClient\Oic\Authorization;
 
-use InoOicClient\Oic\Authorization\State\Storage\StorageInterface;
-use InoOicClient\Oic\Authorization\State\StateFactoryInterface;
+use Zend\Http;
+use InoOicClient\Oic\Authorization\State;
 
 
 /**
@@ -20,15 +20,9 @@ class Dispatcher
 
     /**
      * The state storage.
-     * @var StorageInterface
+     * @var State\Manager
      */
-    protected $stateStorage;
-
-    /**
-     * The state factory.
-     * @var StateFactoryInterface
-     */
-    protected $stateFactory;
+    protected $stateManager;
 
 
     /**
@@ -46,35 +40,24 @@ class Dispatcher
 
 
     /**
-     * Sets the state storage.
+     * Sets the state manager.
      * 
-     * @param StorageInterface $stateStorage
+     * @param State\Manager $stateStorage
      */
-    public function setStateStorage(StorageInterface $stateStorage)
+    public function setStateManager(State\Manager $stateManager)
     {
-        $this->stateStorage = $stateStorage;
+        $this->stateManager = $stateManager;
     }
 
 
     /**
-     * Returns the state storage.
+     * Returns the state manager.
      * 
-     * @return StorageInterface
+     * @return State\Manager
      */
-    public function getStateStorage()
+    public function getStateManager()
     {
-        return $this->stateStorage;
-    }
-
-
-    /**
-     * Sets the state factory.
-     *
-     * @param StateFactoryInterface $stateFactory
-     */
-    public function setStateFactory($stateFactory)
-    {
-        $this->stateFactory = $stateFactory;
+        return $this->stateManager;
     }
 
 
@@ -97,14 +80,73 @@ class Dispatcher
      */
     public function createAuthorizationRequestUri(Request $request)
     {
-        $stateStorage = $this->getStateStorage();
-        $stateFactory = $this->getStateFactory();
-        if ($stateStorage && $stateFactory) {
-            $state = $this->getStateFactory()->createState();
-            $this->stateStorage->saveState($state);
+        if ($stateManager = $this->getStateManager()) {
+            $state = $stateManager->initState();
             $request->setState($state->getHash());
         }
         
         return $this->uriGenerator->createAuthorizationRequestUri($request);
+    }
+
+
+    /**
+     * Validates and returns the authorization response.
+     * 
+     * @param Http\Request $httpRequest
+     * @throws Exception\ErrorResponseException
+     * @throws Exception\StateException
+     * @throws Exception\InvalidResponseException
+     * @return Response
+     */
+    public function getAuthorizationResponse(Http\Request $httpRequest = null)
+    {
+        if (null === $httpRequest) {
+            $httpRequest = new Http\PhpEnvironment\Request();
+        }
+        
+        $params = $httpRequest->getQuery();
+        
+        if ($errorCode = $params->get(Param::ERROR)) {
+            $error = $this->createError($errorCode, $params->get(Param::ERROR_DESCRIPTION), 
+                $params->get(Param::ERROR_URI));
+            
+            throw new Exception\ErrorResponseException($error);
+        }
+        
+        $stateHash = $params->get(Param::STATE);
+        
+        if ($stateManager = $this->getStateManager()) {
+            try {
+                $stateManager->validateState($stateHash);
+            } catch (\Exception $e) {
+                throw new Exception\StateException(
+                    sprintf("State validation exception: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+            }
+        } elseif (null !== $stateHash) {
+            throw new Exception\StateException('State manager not initialized, cannot validate incoming state value');
+        }
+        
+        $code = $params->get(Param::CODE);
+        if (null === $code) {
+            throw new Exception\InvalidResponseException('No code in response');
+        }
+        
+        // FIXME - use factory
+        $response = new Response();
+        $response->setCode($code);
+        $response->setState($stateHash);
+        
+        return $response;
+    }
+
+
+    protected function createError($code, $description = null, $uri = null)
+    {
+        $error = new Error();
+        $error->setCode($code);
+        $error->setDescription($description);
+        $error->setUri($uri);
+        
+        return $error;
     }
 }

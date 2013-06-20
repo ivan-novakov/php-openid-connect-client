@@ -14,11 +14,9 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $uri = 'https://oic.server.org/authorize?foo=bar';
         
         $request = $this->createAuthorizationRequest();
-        
         $uriGenerator = $this->createUriGeneratorMock($request, $uri);
         
         $dispatcher = new Dispatcher($uriGenerator);
-        
         $this->assertSame($uri, $dispatcher->createAuthorizationRequestUri($request));
     }
 
@@ -38,17 +36,12 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $dispatcher = new Dispatcher($uriGenerator);
         
         $state = $this->createStateMock($hash);
-        $stateFactory = $this->createStateFactoryMock();
-        $stateFactory->expects($this->once())
-            ->method('createState')
-            ->will($this->returnValue($state));
-        $dispatcher->setStateFactory($stateFactory);
         
-        $stateStorage = $this->createStateStorageMock();
-        $stateStorage->expects($this->once())
-            ->method('saveState')
-            ->with($state);
-        $dispatcher->setStateStorage($stateStorage);
+        $stateManager = $this->createStateManagerMock();
+        $stateManager->expects($this->once())
+            ->method('initState')
+            ->will($this->returnValue($state));
+        $dispatcher->setStateManager($stateManager);
         
         $this->assertSame($uri, $dispatcher->createAuthorizationRequestUri($request));
     }
@@ -79,19 +72,10 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    protected function createStateFactoryMock()
+    protected function createStateManagerMock()
     {
-        $factory = $this->getMock('InoOicClient\Oic\Authorization\State\StateFactoryInterface');
-        
+        $factory = $this->getMock('InoOicClient\Oic\Authorization\State\Manager');
         return $factory;
-    }
-
-
-    protected function createStateStorageMock()
-    {
-        $storage = $this->getMock('InoOicClient\Oic\Authorization\State\Storage\StorageInterface');
-        
-        return $storage;
     }
 
 
