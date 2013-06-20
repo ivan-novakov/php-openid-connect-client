@@ -24,7 +24,7 @@ class UriGenerator
         $clientInfo = $request->getClientInfo();
         /* @var $serverInfo \InoOicClient\Server\ServerInfo */
         $serverInfo = $request->getServerInfo();
-        
+
         $uri = new Uri($serverInfo->getAuthorizationEndpoint());
         
         $params = array(

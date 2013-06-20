@@ -2,6 +2,7 @@
 
 namespace InoOicClient\Oic\Authorization;
 
+use InoOicClient\Oic\Error;
 use Zend\Http;
 use InoOicClient\Oic\Authorization\State;
 
@@ -24,6 +25,12 @@ class Dispatcher
      */
     protected $stateManager;
 
+    /**
+     * Response factory.
+     * @var ResponseFactoryInterface
+     */
+    protected $responseFactory;
+
 
     /**
      * Constructor.
@@ -32,10 +39,34 @@ class Dispatcher
      */
     public function __construct(UriGenerator $uriGenerator = null)
     {
-        if (null === $uriGenerator) {
-            $uriGenerator = new UriGenerator();
+        if (null !== $uriGenerator) {
+            $this->setUriGenerator($uriGenerator);
         }
+    }
+
+
+    /**
+     * Sets the URI generator.
+     *
+     * @param UriGenerator $uriGenerator
+     */
+    public function setUriGenerator(UriGenerator $uriGenerator)
+    {
         $this->uriGenerator = $uriGenerator;
+    }
+
+
+    /**
+     * Returns the URI generator.
+     * 
+     * @return UriGenerator
+     */
+    public function getUriGenerator()
+    {
+        if (! $this->uriGenerator instanceof UriGenerator) {
+            $this->uriGenerator = new UriGenerator();
+        }
+        return $this->uriGenerator;
     }
 
 
@@ -62,13 +93,27 @@ class Dispatcher
 
 
     /**
-     * Returns the state factory.
+     * Returns the response factory.
      * 
-     * @return StateFactoryInterface
+     * @return ResponseFactoryInterface
      */
-    public function getStateFactory()
+    public function getResponseFactory()
     {
-        return $this->stateFactory;
+        if (! $this->responseFactory instanceof ResponseFactoryInterface) {
+            $this->responseFactory = new ResponseFactory();
+        }
+        return $this->responseFactory;
+    }
+
+
+    /**
+	 * Sets the response factory.
+	 * 
+     * @param ResponseFactoryInterface $responseFactory
+     */
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory)
+    {
+        $this->responseFactory = $responseFactory;
     }
 
 
@@ -85,7 +130,7 @@ class Dispatcher
             $request->setState($state->getHash());
         }
         
-        return $this->uriGenerator->createAuthorizationRequestUri($request);
+        return $this->getUriGenerator()->createAuthorizationRequestUri($request);
     }
 
 
@@ -123,7 +168,7 @@ class Dispatcher
                     sprintf("State validation exception: [%s] %s", get_class($e), $e->getMessage()), null, $e);
             }
         } elseif (null !== $stateHash) {
-            throw new Exception\StateException('State manager not initialized, cannot validate incoming state value');
+            throw new Exception\MissingStateManagerException('State manager not initialized, cannot validate incoming state value');
         }
         
         $code = $params->get(Param::CODE);
@@ -131,11 +176,7 @@ class Dispatcher
             throw new Exception\InvalidResponseException('No code in response');
         }
         
-        // FIXME - use factory
-        $response = new Response();
-        $response->setCode($code);
-        $response->setState($stateHash);
-        
+        $response = $this->getResponseFactory()->createResponse($code, $stateHash);
         return $response;
     }
 

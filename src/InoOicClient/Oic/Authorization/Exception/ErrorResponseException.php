@@ -25,7 +25,7 @@ class ErrorResponseException extends \RuntimeException
             $message .= ", more info: $uri";
         }
         
-        parent::__construct($message, $error->getCode());
+        parent::__construct($message);
     }
 
 
