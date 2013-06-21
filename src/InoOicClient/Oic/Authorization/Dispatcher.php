@@ -15,7 +15,7 @@ class Dispatcher
 
     /**
      * Authorization request URI generator.
-     * @var UriGenerator
+     * @var Uri\Generator
      */
     protected $uriGenerator;
 
@@ -35,9 +35,9 @@ class Dispatcher
     /**
      * Constructor.
      * 
-     * @param UriGenerator $uriGenerator
+     * @param Uri\Generator $uriGenerator
      */
-    public function __construct(UriGenerator $uriGenerator = null)
+    public function __construct(Uri\Generator $uriGenerator = null)
     {
         if (null !== $uriGenerator) {
             $this->setUriGenerator($uriGenerator);
@@ -48,9 +48,9 @@ class Dispatcher
     /**
      * Sets the URI generator.
      *
-     * @param UriGenerator $uriGenerator
+     * @param Uri\Generator $uriGenerator
      */
-    public function setUriGenerator(UriGenerator $uriGenerator)
+    public function setUriGenerator(Uri\Generator $uriGenerator)
     {
         $this->uriGenerator = $uriGenerator;
     }
@@ -59,12 +59,12 @@ class Dispatcher
     /**
      * Returns the URI generator.
      * 
-     * @return UriGenerator
+     * @return Uri\Generator
      */
     public function getUriGenerator()
     {
-        if (! $this->uriGenerator instanceof UriGenerator) {
-            $this->uriGenerator = new UriGenerator();
+        if (! $this->uriGenerator instanceof Uri\Generator) {
+            $this->uriGenerator = new Uri\Generator();
         }
         return $this->uriGenerator;
     }

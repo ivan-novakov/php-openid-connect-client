@@ -1,20 +1,22 @@
 <?php
 
-namespace InoOicClient\Oic\Authorization;
+namespace InoOicClient\Oic\Authorization\Uri;
 
 use Zend\Uri\Uri;
+use InoOicClient\Oic\Authorization\Param;
+use InoOicClient\Oic\Authorization\Request;
 
 
 /**
  * Creates an URI based on the provided authorization request.
  */
-class UriGenerator
+class Generator
 {
 
 
     /**
      * Generates an URI representing the authorization request.
-     * 
+     *
      * @param Request $request
      * @return string
      */
@@ -24,7 +26,7 @@ class UriGenerator
         $clientInfo = $request->getClientInfo();
         /* @var $serverInfo \InoOicClient\Server\ServerInfo */
         $serverInfo = $request->getServerInfo();
-
+        
         $uri = new Uri($serverInfo->getAuthorizationEndpoint());
         
         $params = array(

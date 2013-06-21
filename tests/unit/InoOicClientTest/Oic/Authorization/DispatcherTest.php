@@ -23,7 +23,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     public function testImplicitUriGenerator()
     {
         $dispatcher = new Dispatcher();
-        $this->assertInstanceOf('InoOicClient\Oic\Authorization\UriGenerator', $dispatcher->getUriGenerator());
+        $this->assertInstanceOf('InoOicClient\Oic\Authorization\Uri\Generator', $dispatcher->getUriGenerator());
     }
 
 
@@ -222,7 +222,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     protected function createUriGeneratorMock($request = null, $uri = null)
     {
-        $uriGenerator = $this->getMock('InoOicClient\Oic\Authorization\UriGenerator');
+        $uriGenerator = $this->getMock('InoOicClient\Oic\Authorization\Uri\Generator');
         if ($request && $uri) {
             $uriGenerator->expects(($this->once()))
                 ->method('createAuthorizationRequestUri')
