@@ -20,9 +20,16 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     /**
      *@dataProvider requestProvider
      */
-    public function testCreateAuthorizationRequestUri($baseUri, $clientId, $redirectUri, $responseType, $scope, $state, 
-        $expectedUri)
+    public function testCreateAuthorizationRequestUri($baseUri, $clientId, $redirectUri, $responseType, $scope, $state, $expectedUri, $endpointException = false, $fieldException = false)
     {
+        if ($endpointException) {
+            $this->setExpectedException('InoOicClient\Oic\Authorization\Uri\Exception\MissingEndpointException');
+        }
+        
+        if ($fieldException) {
+            $this->setExpectedException('InoOicClient\Oic\Authorization\Uri\Exception\MissingFieldException');
+        }
+        
         $clientInfo = $this->createClientInfoMock($clientId, $redirectUri);
         $serverInfo = $this->createServerInfoMock($baseUri);
         $request = $this->createRequestMock($responseType, $scope, $state, $clientInfo, $serverInfo);
@@ -36,6 +43,7 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     public function requestProvider()
     {
         return array(
+            // with single scope and responseType
             array(
                 'https://oic.server.org/authorize',
                 '123',
@@ -48,10 +56,10 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
                 ),
                 'a0a0a0a0',
                 
-                'https://oic.server.org/authorize?client_id=123&redirect_uri=' .
-                     rawurlencode('https://oic.client.org/redirect') . '&response_type=code&scope=openid&state=a0a0a0a0'
+                'https://oic.server.org/authorize?client_id=123&redirect_uri=' . rawurlencode('https://oic.client.org/redirect') . '&response_type=code&scope=openid&state=a0a0a0a0'
             ),
             
+            // with multiple scopes and responseTypes
             array(
                 'https://oic.server.org/authorize',
                 '123',
@@ -66,9 +74,101 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
                 ),
                 'a0a0a0a0',
                 
-                'https://oic.server.org/authorize?client_id=123&redirect_uri=' .
-                 rawurlencode('https://oic.client.org/redirect') . '&response_type=' . rawurlencode('code token') . '&scope=' .
-                 rawurlencode('openid email') . '&state=a0a0a0a0'
+                'https://oic.server.org/authorize?client_id=123&redirect_uri=' . rawurlencode('https://oic.client.org/redirect') . '&response_type=' . rawurlencode('code token') . '&scope=' . rawurlencode('openid email') . '&state=a0a0a0a0'
+            ),
+            
+            // with missing endpoint
+            array(
+                null,
+                '123',
+                'https://oic.client.org/redirect',
+                array(
+                    'code'
+                ),
+                array(
+                    'openid'
+                ),
+                'a0a0a0a0',
+                
+                null,
+                
+                true
+            ),
+            
+            // with missing clientId
+            array(
+                'https://oic.server.org/authorize',
+                null,
+                'https://oic.client.org/redirect',
+                array(
+                    'code'
+                ),
+                array(
+                    'openid'
+                ),
+                'a0a0a0a0',
+                
+                null,
+                
+                false,
+                
+                true
+            ),
+            
+            // with missing redirectUri
+            array(
+                'https://oic.server.org/authorize',
+                '123',
+                null,
+                array(
+                    'code'
+                ),
+                array(
+                    'openid'
+                ),
+                'a0a0a0a0',
+                
+                null,
+                
+                false,
+                
+                true
+            ),
+            
+            // with missing responseType
+            array(
+                'https://oic.server.org/authorize',
+                '123',
+                'https://oic.client.org/redirect',
+                array(),
+                array(
+                    'openid'
+                ),
+                'a0a0a0a0',
+                
+                null,
+                
+                false,
+                
+                true
+            ),
+            
+            // with missing scope
+            array(
+                'https://oic.server.org/authorize',
+                '123',
+                'https://oic.client.org/redirect',
+                array(
+                    'code'
+                ),
+                array(),
+                'a0a0a0a0',
+                
+                null,
+                
+                false,
+                
+                true
             )
         );
     }
@@ -83,10 +183,10 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
             'getRedirectUri'
         ))
             ->getMock();
-        $clientInfo->expects($this->once())
+        $clientInfo->expects($this->any())
             ->method('getClientId')
             ->will($this->returnValue($clientId));
-        $clientInfo->expects($this->once())
+        $clientInfo->expects($this->any())
             ->method('getRedirectUri')
             ->will($this->returnValue($redirectUri));
         return $clientInfo;
@@ -112,14 +212,13 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     {
         $request = $this->getMockBuilder('InoOicClient\Oic\Authorization\Request')
             ->disableOriginalConstructor()
-            ->setMethods(
-            array(
-                'getResponseType',
-                'getScope',
-                'getState',
-                'getServerInfo',
-                'getClientInfo'
-            ))
+            ->setMethods(array(
+            'getResponseType',
+            'getScope',
+            'getState',
+            'getServerInfo',
+            'getClientInfo'
+        ))
             ->getMock();
         
         $request->expects($this->any())

@@ -13,6 +13,13 @@ use InoOicClient\Oic\Authorization\Request;
 class Generator
 {
 
+    protected $requiredParams = array(
+        Param::CLIENT_ID,
+        Param::REDIRECT_URI,
+        Param::RESPONSE_TYPE,
+        Param::SCOPE
+    );
+
 
     /**
      * Generates an URI representing the authorization request.
@@ -22,12 +29,20 @@ class Generator
      */
     public function createAuthorizationRequestUri(Request $request)
     {
+        
         /* @var $clientInfo \InoOicClient\Client\ClientInfo */
         $clientInfo = $request->getClientInfo();
+        if (! $clientInfo) {}
+        
         /* @var $serverInfo \InoOicClient\Server\ServerInfo */
         $serverInfo = $request->getServerInfo();
+        if (! $serverInfo) {}
         
-        $uri = new Uri($serverInfo->getAuthorizationEndpoint());
+        if (($endpointUri = $serverInfo->getAuthorizationEndpoint()) === null) {
+            throw new Exception\MissingEndpointException('No endpoint specified');
+        }
+        
+        $uri = new Uri($endpointUri);
         
         $params = array(
             Param::CLIENT_ID => $clientInfo->getClientId(),
@@ -36,6 +51,13 @@ class Generator
             Param::SCOPE => $this->arrayToSpaceDelimited($request->getScope()),
             Param::STATE => $request->getState()
         );
+        
+        foreach ($params as $name => $value) {
+            if (in_array($name, $this->requiredParams) && empty($value)) {
+                throw new Exception\MissingFieldException($name);
+            }
+        }
+        
         $uri->setQuery($params);
         
         return $uri->toString();
