@@ -39,8 +39,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     public function testGetImplicitResponseFactory()
     {
         $dispatcher = new Dispatcher();
-        $this->assertInstanceOf('InoOicClient\Oic\Authorization\ResponseFactoryInterface', 
-            $dispatcher->getResponseFactory());
+        $this->assertInstanceOf('InoOicClient\Oic\Authorization\ResponseFactoryInterface', $dispatcher->getResponseFactory());
     }
 
 
@@ -98,12 +97,11 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $uri = 'error_uri';
         
         $dispatcher = new Dispatcher();
-        $httpRequest = $this->createHttpRequestMock(
-            array(
-                'error' => $code,
-                'error_description' => $desc,
-                'error_uri' => $uri
-            ));
+        $httpRequest = $this->createHttpRequestMock(array(
+            'error' => $code,
+            'error_description' => $desc,
+            'error_uri' => $uri
+        ));
         
         try {
             $dispatcher->getAuthorizationResponse($httpRequest);
@@ -130,7 +128,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             'state' => $stateHash
         ));
         
-        $stateManager = $this->createStateManagerMock($stateHash);
+        $stateManager = $this->createStateManagerMock($stateHash, true);
         $dispatcher->setStateManager($stateManager);
         
         $dispatcher->getAuthorizationResponse($httpRequest);
@@ -164,7 +162,6 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAuthorizationResponseOkWithoutState()
     {
-        $this->markTestIncomplete();
         $code = '123';
         
         $state = $this->createStateMock();
@@ -174,11 +171,42 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             'code' => $code
         ));
         
-        $responseFactory = $this->createResponseFactoryMock($code, $state);
-        $dispatcher->getAuthorizationResponse($httpRequest);
+        $response = $this->createResponseMock();
+        
+        $responseFactory = $this->createResponseFactoryMock($code, $response);
+        $dispatcher->setResponseFactory($responseFactory);
+        
+        $this->assertSame($response, $dispatcher->getAuthorizationResponse($httpRequest));
+    }
+
+
+    public function testGetAuthorizationResponseOkWithState()
+    {
+        $code = '123';
+        $stateHash = 'abc';
+        
+        $state = $this->createStateMock();
+        
+        $dispatcher = new Dispatcher();
+        $httpRequest = $this->createHttpRequestMock(array(
+            'code' => $code,
+            'state' => $stateHash
+        ));
+        
+        $response = $this->createResponseMock();
+        
+        $responseFactory = $this->createResponseFactoryMock($code, $response, $stateHash);
+        $dispatcher->setResponseFactory($responseFactory);
+        
+        $stateManager = $this->createStateManagerMock($stateHash);
+        $dispatcher->setStateManager($stateManager);
+        
+        $this->assertSame($response, $dispatcher->getAuthorizationResponse($httpRequest));
     }
     
-    // ---------------------------
+    /*
+     * -----------------------------------------------------------------------------
+     */
     protected function createAuthorizationRequest()
     {
         $request = $this->getMockBuilder('InoOicClient\Oic\Authorization\Request')
@@ -205,14 +233,20 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    protected function createStateManagerMock($validateHash = null)
+    protected function createStateManagerMock($validateHash = null, $throwException = false)
     {
         $manager = $this->getMock('InoOicClient\Oic\Authorization\State\Manager');
         if ($validateHash) {
-            $manager->expects($this->once())
-                ->method('validateState')
-                ->with($validateHash)
-                ->will($this->throwException(new \Exception()));
+            if ($throwException) {
+                $manager->expects($this->once())
+                    ->method('validateState')
+                    ->with($validateHash)
+                    ->will($this->throwException(new \Exception()));
+            } else {
+                $manager->expects($this->once())
+                    ->method('validateState')
+                    ->with($validateHash);
+            }
         }
         return $manager;
     }
@@ -257,5 +291,12 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             ->method('getQuery')
             ->will($this->returnValue(new Parameters($queryParams)));
         return $httpRequest;
+    }
+
+
+    protected function createResponseMock()
+    {
+        $response = $this->getMock('InoOicClient\Oic\Authorization\Response');
+        return $response;
     }
 }
