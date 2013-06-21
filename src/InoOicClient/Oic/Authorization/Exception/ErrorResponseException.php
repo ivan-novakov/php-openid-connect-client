@@ -8,9 +8,18 @@ use InoOicClient\Oic\Error;
 class ErrorResponseException extends \RuntimeException
 {
 
+    /**
+     * The error object.
+     * @var Error
+     */
     protected $error;
 
 
+    /**
+     * Constructor.
+     * 
+     * @param Error $error
+     */
     public function __construct(Error $error)
     {
         $this->error = $error;
@@ -29,6 +38,11 @@ class ErrorResponseException extends \RuntimeException
     }
 
 
+    /**
+     * Returns the error object.
+     *
+     * @return Error
+     */
     public function getError()
     {
         return $this->error;

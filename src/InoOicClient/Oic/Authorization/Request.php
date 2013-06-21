@@ -11,14 +11,14 @@ use InoOicClient\Util\ArgumentNormalizer;
 /**
  * Authorization request.
  * 
- * @method void setClientInfo(\InoOicClient\Client\ClientInfo $clientInfo)
- * @method void setServerInfo(\InoOicClient\Server\ServerInfo $serverInfo)
+ * @method void setClientInfo(ClientInfo $clientInfo)
+ * @method void setServerInfo(ServerInfo $serverInfo)
  * @method void setResponseType(string|array $responseType)
  * @method void setScope(mixed $scope)
  * @method void setState(string $state)
  * 
- * @method InoOicClient\Client\ClientInfo getClientInfo()
- * @method InoOicClient\Server\ServerInfo getServerInfo()
+ * @method ClientInfo getClientInfo()
+ * @method ServerInfo getServerInfo()
  * @method array getResponseType()
  * @method array getScope()
  * @method string getState()
@@ -46,8 +46,7 @@ class Request extends AbstractEntity
      * @param string $state
      * @param array $extraParams
      */
-    public function __construct(ClientInfo $clientInfo, ServerInfo $serverInfo, $responseType, $scope, $state = null, 
-        array $extraParams = array())
+    public function __construct(ClientInfo $clientInfo, ServerInfo $serverInfo, $responseType, $scope, $state = null, array $extraParams = array())
     {
         $this->setClientInfo($clientInfo);
         $this->setServerInfo($serverInfo);
