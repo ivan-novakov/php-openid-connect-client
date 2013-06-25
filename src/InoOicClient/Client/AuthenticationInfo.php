@@ -17,12 +17,16 @@ use InoOicClient\Entity\AbstractEntity;
 class AuthenticationInfo extends AbstractEntity
 {
 
-    const METHOD = 'method';
+    const METHOD_SECRET_BASIC = 'client_secret_basic';
 
-    const PARAMS = 'params';
+    const METHOD_SECRET_POST = 'client_secret_post';
+
+    const PROP_METHOD = 'method';
+
+    const PROP_PARAMS = 'params';
 
     protected $allowedProperties = array(
-        self::METHOD,
-        self::PARAMS
+        self::PROP_METHOD,
+        self::PROP_PARAMS
     );
 }
