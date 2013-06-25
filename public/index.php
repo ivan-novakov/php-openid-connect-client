@@ -16,13 +16,10 @@ $dispatcher->setStateManager($stateManager);
 
 if (! isset($_GET['redirect'])) {
     
-    $serverInfo = new ServerInfo();
-    $serverInfo->fromArray($config['server_info']);
-    
     $clientInfo = new ClientInfo();
     $clientInfo->fromArray($config['client_info']);
     
-    $request = new Authorization\Request($clientInfo, $serverInfo, 'code', 'openid');
+    $request = new Authorization\Request($clientInfo, 'code', 'openid');
     
     $uri = $dispatcher->createAuthorizationRequestUri($request);
     
