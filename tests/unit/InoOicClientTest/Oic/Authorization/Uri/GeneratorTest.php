@@ -20,7 +20,8 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     /**
      *@dataProvider requestProvider
      */
-    public function testCreateAuthorizationRequestUri($baseUri, $clientId, $redirectUri, $responseType, $scope, $state, $expectedUri, $endpointException = false, $fieldException = false)
+    public function testCreateAuthorizationRequestUri($baseUri, $clientId, $redirectUri, $responseType, $scope, $state, 
+        $expectedUri, $endpointException = false, $fieldException = false)
     {
         if ($endpointException) {
             $this->setExpectedException('InoOicClient\Oic\Authorization\Uri\Exception\MissingEndpointException');
@@ -30,9 +31,8 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
             $this->setExpectedException('InoOicClient\Oic\Authorization\Uri\Exception\MissingFieldException');
         }
         
-        $clientInfo = $this->createClientInfoMock($clientId, $redirectUri);
-        $serverInfo = $this->createServerInfoMock($baseUri);
-        $request = $this->createRequestMock($responseType, $scope, $state, $clientInfo, $serverInfo);
+        $clientInfo = $this->createClientInfoMock($clientId, $redirectUri, $baseUri);
+        $request = $this->createRequestMock($responseType, $scope, $state, $clientInfo);
         
         $resultUri = $this->generator->createAuthorizationRequestUri($request);
         
@@ -56,7 +56,8 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
                 ),
                 'a0a0a0a0',
                 
-                'https://oic.server.org/authorize?client_id=123&redirect_uri=' . rawurlencode('https://oic.client.org/redirect') . '&response_type=code&scope=openid&state=a0a0a0a0'
+                'https://oic.server.org/authorize?client_id=123&redirect_uri=' .
+                     rawurlencode('https://oic.client.org/redirect') . '&response_type=code&scope=openid&state=a0a0a0a0'
             ),
             
             // with multiple scopes and responseTypes
@@ -74,7 +75,9 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
                 ),
                 'a0a0a0a0',
                 
-                'https://oic.server.org/authorize?client_id=123&redirect_uri=' . rawurlencode('https://oic.client.org/redirect') . '&response_type=' . rawurlencode('code token') . '&scope=' . rawurlencode('openid email') . '&state=a0a0a0a0'
+                'https://oic.server.org/authorize?client_id=123&redirect_uri=' .
+                 rawurlencode('https://oic.client.org/redirect') . '&response_type=' . rawurlencode('code token') .
+                 '&scope=' . rawurlencode('openid email') . '&state=a0a0a0a0'
             ),
             
             // with missing endpoint
@@ -174,14 +177,16 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    protected function createClientInfoMock($clientId, $redirectUri)
+    protected function createClientInfoMock($clientId, $redirectUri, $endpointUri)
     {
         $clientInfo = $this->getMockBuilder('InoOicClient\Client\ClientInfo')
             ->disableOriginalConstructor()
-            ->setMethods(array(
-            'getClientId',
-            'getRedirectUri'
-        ))
+            ->setMethods(
+            array(
+                'getClientId',
+                'getRedirectUri',
+                'getAuthorizationEndpoint'
+            ))
             ->getMock();
         $clientInfo->expects($this->any())
             ->method('getClientId')
@@ -189,36 +194,24 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
         $clientInfo->expects($this->any())
             ->method('getRedirectUri')
             ->will($this->returnValue($redirectUri));
+        $clientInfo->expects($this->once())
+            ->method('getAuthorizationEndpoint')
+            ->will($this->returnValue($endpointUri));
         return $clientInfo;
     }
 
 
-    protected function createServerInfoMock($uri)
-    {
-        $serverInfo = $this->getMockBuilder('InoOicClient\Server\ServerInfo')
-            ->disableOriginalConstructor()
-            ->setMethods(array(
-            'getAuthorizationEndpoint'
-        ))
-            ->getMock();
-        $serverInfo->expects($this->once())
-            ->method('getAuthorizationEndpoint')
-            ->will($this->returnValue($uri));
-        return $serverInfo;
-    }
-
-
-    protected function createRequestMock($responseType, $scope, $state, $clientInfo, $serverInfo)
+    protected function createRequestMock($responseType, $scope, $state, $clientInfo)
     {
         $request = $this->getMockBuilder('InoOicClient\Oic\Authorization\Request')
             ->disableOriginalConstructor()
-            ->setMethods(array(
-            'getResponseType',
-            'getScope',
-            'getState',
-            'getServerInfo',
-            'getClientInfo'
-        ))
+            ->setMethods(
+            array(
+                'getResponseType',
+                'getScope',
+                'getState',
+                'getClientInfo'
+            ))
             ->getMock();
         
         $request->expects($this->any())
@@ -233,9 +226,6 @@ class GeneratorTest extends \PHPUnit_Framework_TestCase
         $request->expects($this->any())
             ->method('getClientInfo')
             ->will($this->returnValue($clientInfo));
-        $request->expects($this->any())
-            ->method('getServerInfo')
-            ->will($this->returnValue($serverInfo));
         
         return $request;
     }

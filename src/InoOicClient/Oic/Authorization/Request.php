@@ -12,13 +12,11 @@ use InoOicClient\Util\ArgumentNormalizer;
  * Authorization request.
  * 
  * @method void setClientInfo(ClientInfo $clientInfo)
- * @method void setServerInfo(ServerInfo $serverInfo)
  * @method void setResponseType(string|array $responseType)
  * @method void setScope(mixed $scope)
  * @method void setState(string $state)
  * 
  * @method ClientInfo getClientInfo()
- * @method ServerInfo getServerInfo()
  * @method array getResponseType()
  * @method array getScope()
  * @method string getState()
@@ -26,9 +24,10 @@ use InoOicClient\Util\ArgumentNormalizer;
 class Request extends AbstractEntity
 {
 
+    const CLIENT_INFO = 'client_info';
+
     protected $allowedProperties = array(
-        'client_info',
-        'server_info',
+        self::CLIENT_INFO,
         Param::RESPONSE_TYPE,
         Param::SCOPE,
         Param::STATE,
@@ -39,17 +38,15 @@ class Request extends AbstractEntity
     /**
      * Constructor.
      * 
+     * @param ClientInfo $clientInfo
      * @param string $responseType
-     * @param string $clientId
-     * @param string $redirectUri
      * @param string $scope
      * @param string $state
      * @param array $extraParams
      */
-    public function __construct(ClientInfo $clientInfo, ServerInfo $serverInfo, $responseType, $scope, $state = null, array $extraParams = array())
+    public function __construct(ClientInfo $clientInfo, $responseType, $scope, $state = null, array $extraParams = array())
     {
         $this->setClientInfo($clientInfo);
-        $this->setServerInfo($serverInfo);
         $this->setResponseType($responseType);
         $this->setScope($scope);
         $this->setState($state);

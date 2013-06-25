@@ -32,13 +32,11 @@ class Generator
         
         /* @var $clientInfo \InoOicClient\Client\ClientInfo */
         $clientInfo = $request->getClientInfo();
-        if (! $clientInfo) {}
+        if (! $clientInfo) {
+            throw new \RuntimeException('Missing client info in request');
+        }
         
-        /* @var $serverInfo \InoOicClient\Server\ServerInfo */
-        $serverInfo = $request->getServerInfo();
-        if (! $serverInfo) {}
-        
-        if (($endpointUri = $serverInfo->getAuthorizationEndpoint()) === null) {
+        if (($endpointUri = $clientInfo->getAuthorizationEndpoint()) === null) {
             throw new Exception\MissingEndpointException('No endpoint specified');
         }
         

@@ -24,12 +24,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             'nonce' => 'bar'
         );
         $clientInfo = $this->createClientInfoMock();
-        $serverInfo = $this->createServerInfoMock();
         
-        $request = new Request($clientInfo, $serverInfo, $responseType, $scope, $state, $extraParams);
+        $request = new Request($clientInfo, $responseType, $scope, $state, $extraParams);
         
         $this->assertSame($clientInfo, $request->getClientInfo());
-        $this->assertSame($serverInfo, $request->getServerInfo());
         $this->assertSame($responseType, $request->getResponseType());
         $this->assertSame($scope, $request->getScope());
         $this->assertSame($state, $request->getState());
@@ -138,9 +136,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             'nonce' => 'bar'
         );
         $clientInfo = $this->createClientInfoMock();
-        $serverInfo = $this->createServerInfoMock();
         
-        $request = new Request($clientInfo, $serverInfo, $responseType, $scope, $state, $extraParams);
+        $request = new Request($clientInfo, $responseType, $scope, $state, $extraParams);
         
         return $request;
     }
@@ -152,14 +149,5 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         return $clientInfo;
-    }
-
-
-    protected function createServerInfoMock()
-    {
-        $serverInfo = $this->getMockBuilder('InoOicClient\Server\ServerInfo')
-            ->disableOriginalConstructor()
-            ->getMock();
-        return $serverInfo;
     }
 }
