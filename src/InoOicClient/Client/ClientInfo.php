@@ -52,4 +52,17 @@ class ClientInfo extends AbstractEntity
         self::TOKEN_ENDPOINT,
         self::USER_INFO_ENDPOINT
     );
+
+
+    public function fromArray(array $properties)
+    {
+        if (isset($properties[self::AUTHENTICATION_INFO]) && is_array($properties[self::AUTHENTICATION_INFO])) {
+            $authenticationInfo = new AuthenticationInfo();
+            $authenticationInfo->fromArray($properties[self::AUTHENTICATION_INFO]);
+            $this->setAuthenticationInfo($authenticationInfo);
+            unset($properties[self::AUTHENTICATION_INFO]);
+        }
+        
+        parent::fromArray($properties);
+    }
 }

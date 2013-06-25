@@ -40,4 +40,36 @@ class ClientInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($tokenEndpoint, $clientInfo->getTokenEndpoint());
         $this->assertSame($userInfoEndpoint, $clientInfo->getUserInfoEndpoint());
     }
+
+
+    public function testFromArray()
+    {
+        $clientId = '123';
+        $redirectUri = 'https://client/redirect';
+        $method = 'secret';
+        $params = array(
+            'password' => 'abc'
+        );
+        $authenticationInfo = array(
+            'method' => $method,
+            'params' => $params
+        );
+        
+        $properties = array(
+            'client_id' => $clientId,
+            'redirect_uri' => $redirectUri,
+            'authentication_info' => $authenticationInfo
+        );
+        
+        $info = new ClientInfo();
+        $info->fromArray($properties);
+        
+        $this->assertSame($clientId, $info->getClientId());
+        $this->assertSame($redirectUri, $info->getRedirectUri());
+        
+        $authenticationInfo = $info->getAuthenticationInfo();
+        $this->assertInstanceOf('InoOicClient\Client\AuthenticationInfo', $authenticationInfo);
+        $this->assertSame($method, $authenticationInfo->getMethod());
+        $this->assertSame($params, $authenticationInfo->getParams());
+    }
 }

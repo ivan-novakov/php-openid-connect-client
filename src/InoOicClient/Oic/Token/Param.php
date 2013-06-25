@@ -8,6 +8,8 @@ class Param
 
     const CLIENT_ID = 'client_id';
 
+    const CLIENT_SECRET = 'client_secret';
+
     const REDIRECT_URI = 'redirect_uri';
 
     const GRANT_TYPE = 'grant_type';
