@@ -2,7 +2,7 @@
 
 namespace InoOicClientTest\Oic\Authorization;
 
-use InoOicClient\Oic\Authorization\Exception\ErrorResponseException;
+use InoOicClient\Oic\Exception\ErrorResponseException;
 use Zend\Stdlib\Parameters;
 use InoOicClient\Oic\Authorization\Dispatcher;
 
@@ -39,7 +39,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     public function testGetImplicitResponseFactory()
     {
         $dispatcher = new Dispatcher();
-        $this->assertInstanceOf('InoOicClient\Oic\Authorization\ResponseFactoryInterface', $dispatcher->getResponseFactory());
+        $this->assertInstanceOf('InoOicClient\Oic\Authorization\ResponseFactoryInterface', 
+            $dispatcher->getResponseFactory());
     }
 
 
@@ -97,11 +98,12 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $uri = 'error_uri';
         
         $dispatcher = new Dispatcher();
-        $httpRequest = $this->createHttpRequestMock(array(
-            'error' => $code,
-            'error_description' => $desc,
-            'error_uri' => $uri
-        ));
+        $httpRequest = $this->createHttpRequestMock(
+            array(
+                'error' => $code,
+                'error_description' => $desc,
+                'error_uri' => $uri
+            ));
         
         try {
             $dispatcher->getAuthorizationResponse($httpRequest);
@@ -188,10 +190,11 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $state = $this->createStateMock();
         
         $dispatcher = new Dispatcher();
-        $httpRequest = $this->createHttpRequestMock(array(
-            'code' => $code,
-            'state' => $stateHash
-        ));
+        $httpRequest = $this->createHttpRequestMock(
+            array(
+                'code' => $code,
+                'state' => $stateHash
+            ));
         
         $response = $this->createResponseMock();
         

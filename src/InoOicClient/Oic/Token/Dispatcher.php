@@ -2,9 +2,12 @@
 
 namespace InoOicClient\Oic\Token;
 
+use InoOicClient\Oic\ErrorFactory;
+use InoOicClient\Oic\Exception\ErrorResponseException;
 use InoOicClient\Client\Authenticator\AuthenticatorFactory;
 use InoOicClient\Client\Authenticator\AuthenticatorFactoryInterface;
 use InoOicClient\Oic\AbstractHttpRequestDispatcher;
+use InoOicClient\Oic\ErrorFactoryInterface;
 
 
 class Dispatcher extends AbstractHttpRequestDispatcher
@@ -19,6 +22,11 @@ class Dispatcher extends AbstractHttpRequestDispatcher
      * @var ResponseFactoryInterface
      */
     protected $responseFactory;
+
+    /**
+     * @var ErrorFactoryInterface
+     */
+    protected $errorFactory;
 
 
     /**
@@ -63,9 +71,35 @@ class Dispatcher extends AbstractHttpRequestDispatcher
     }
 
 
+    /**
+     * @return ErrorFactoryInterface
+     */
+    public function getErrorFactory()
+    {
+        if (! $this->errorFactory instanceof ErrorFactoryInterface) {
+            $this->errorFactory = new ErrorFactory();
+        }
+        return $this->errorFactory;
+    }
+
+
+    /**
+     * @param ErrorFactoryInterface $errorFactory
+     */
+    public function setErrorFactory($errorFactory)
+    {
+        $this->errorFactory = $errorFactory;
+    }
+
+
     public function sendTokenRequest(Request $request,\Zend\Http\Request $httpRequest = null)
     {
-        $httpRequest = $this->configureHttpRequest($request, $httpRequest);
+        try {
+            $httpRequest = $this->configureHttpRequest($request, $httpRequest);
+        } catch (\Exception $e) {
+            throw new Exception\InvalidRequestException(
+                sprintf("Invalid request: [%s] %s", get_class($e), $e->getMessage()));
+        }
         
         try {
             $httpResponse = $this->httpClient->send($httpRequest);
@@ -81,15 +115,21 @@ class Dispatcher extends AbstractHttpRequestDispatcher
         }
         
         if (! $httpResponse->isSuccess()) {
-            if (isset($responseData['error'])) {
-                // error response exception
+            if (isset($responseData[Param::ERROR])) {
+                $code = $responseData[Param::ERROR];
+                $description = isset($responseData[Param::ERROR_DESCRIPTION]) ? $responseData[Param::ERROR_DESCRIPTION] : null;
+                $uri = isset($responseData[Param::ERROR_URI]) ? $responseData[Param::ERROR_URI] : null;
+                $error = $this->getErrorFactory()->createError($code, $description, $uri);
+                
+                throw new ErrorResponseException($error);
             }
         }
         
         try {
             $response = $this->getResponseFactory()->createResponse($responseData);
         } catch (\Exception $e) {
-            // invalid response
+            throw new Exception\InvalidResponseException(
+                sprintf("Invalid response: [%s] %s", get_class($e), $e->getMessage()));
         }
         
         return $response;

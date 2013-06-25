@@ -35,7 +35,6 @@ if (! isset($_GET['redirect'])) {
         $response = $dispatcher->getAuthorizationResponse();
         printf("OK<br>Code: %s<br>State: %s<br>", $response->getCode(), $response->getState());
         
-        
         $tokenRequest = new Token\Request();
         $tokenRequest->fromArray(
             array(
@@ -46,10 +45,15 @@ if (! isset($_GET['redirect'])) {
         
         $httpClient = _createHttpClient();
         $tokenDispatcher = new Token\Dispatcher($httpClient);
-        $tokenResponse = $tokenDispatcher->sendTokenRequest($tokenRequest);
-        _dump($tokenResponse);
         
-        printf("Access token: %s<br>", $tokenResponse->getAccessToken());
+        try {
+            $tokenResponse = $tokenDispatcher->sendTokenRequest($tokenRequest);
+            _dump($tokenResponse);
+            printf("Access token: %s<br>", $tokenResponse->getAccessToken());
+        } catch (\Exception $e) {
+            printf("Error: [%s] %s<br>", get_class($e), $e->getMessage());
+            _dump("$e");
+        }
     } catch (ErrorResponseException $e) {
         $error = $e->getError();
         printf("Error: %s<br>Description: %s<br>", $error->getCode(), $error->getDescription());

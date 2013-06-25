@@ -2,6 +2,7 @@
 
 namespace InoOicClient\Oic\Authorization;
 
+use InoOicClient\Oic\Exception\ErrorResponseException;
 use InoOicClient\Oic\Error;
 use Zend\Http;
 use InoOicClient\Oic\Authorization\State;
@@ -155,7 +156,7 @@ class Dispatcher
             $error = $this->createError($errorCode, $params->get(Param::ERROR_DESCRIPTION), 
                 $params->get(Param::ERROR_URI));
             
-            throw new Exception\ErrorResponseException($error);
+            throw new ErrorResponseException($error);
         }
         
         $stateHash = $params->get(Param::STATE);
@@ -168,7 +169,8 @@ class Dispatcher
                     sprintf("State validation exception: [%s] %s", get_class($e), $e->getMessage()), null, $e);
             }
         } elseif (null !== $stateHash) {
-            throw new Exception\MissingStateManagerException('State manager not initialized, cannot validate incoming state value');
+            throw new Exception\MissingStateManagerException(
+                'State manager not initialized, cannot validate incoming state value');
         }
         
         $code = $params->get(Param::CODE);
