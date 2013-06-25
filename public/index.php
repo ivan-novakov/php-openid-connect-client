@@ -7,17 +7,7 @@ use InoOicClient\Oic\Authorization\Exception\ErrorResponseException;
 use InoOicClient\Oic\Authorization\Exception\StateException;
 require __DIR__ . '/../init_autoload.php';
 
-$config = array(
-    
-    'server_info' => array(
-        'authorizationEndpoint' => 'https://hroch.cesnet.cz/devel/oic/server/oic/authorize'
-    ),
-    
-    'client_info' => array(
-        'client_id' => 'test-chabruz-client',
-        'redirect_uri' => 'https://chabruz.feld.cvut.cz/devel/oic/client?redirect'
-    )
-);
+$config = require __DIR__ . '/config.php';
 
 $stateManager = new Manager();
 
@@ -44,11 +34,12 @@ if (! isset($_GET['redirect'])) {
     
     try {
         $response = $dispatcher->getAuthorizationResponse();
+        printf("OK<br>Code: %s<br>State: %s", $response->getCode(), $response->getState());
     } catch (ErrorResponseException $e) {
         $error = $e->getError();
         printf("Error: %s<br>Description: %s<br>", $error->getCode(), $error->getDescription());
     } catch (StateException $e) {
-        printf('state exception');
+        printf("State exception:<br>%s", $e);
     } catch (\Exception $e) {
         _dump("$e");
     }

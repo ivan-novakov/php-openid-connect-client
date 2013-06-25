@@ -1,0 +1,16 @@
+<?php
+return array(
+    
+    'server_info' => array(
+        //'authorizationEndpoint' => 'https://hroch.cesnet.cz/devel/oic/server/oic/authorize'
+    'authorizationEndpoint' => 'https://accounts.google.com/o/oauth2/auth'
+    ),
+    
+    'client_info' => array(
+        //'client_id' => 'test-chabruz-client',
+    
+        'client_id' => '580732860769-gia3eguc9rub71n2u67dr03ttdgcl71e.apps.googleusercontent.com',
+        
+        'redirect_uri' => 'https://chabruz.feld.cvut.cz/devel/oic/client?redirect'
+    )
+);

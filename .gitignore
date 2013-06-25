@@ -3,3 +3,4 @@
 .buildpath
 vendor
 composer.lock
+public/config.php
