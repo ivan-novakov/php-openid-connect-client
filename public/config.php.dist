@@ -3,7 +3,6 @@ return array(
     
     'client_info' => array(
         'client_id' => 'xxx.apps.googleusercontent.com',
-        
         'redirect_uri' => 'https://app.example.org/redirect',
         
         'authorization_endpoint' => 'https://accounts.google.com/o/oauth2/auth',
@@ -12,7 +11,6 @@ return array(
         'authentication_info' => array(
             'method' => 'client_secret_post',
             'params' => array(
-                'client_id' => 'xxx.apps.googleusercontent.com',
                 'client_secret' => 'yyy'
             )
         )

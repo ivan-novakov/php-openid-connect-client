@@ -157,9 +157,7 @@ class Dispatcher extends AbstractHttpRequestDispatcher
         
         $httpRequest->getHeaders()->addHeaderLine('Content-Type', 'application/x-www-form-urlencoded');
         
-        $authenticator = $this->getClientAuthenticatorFactory()->createAuthenticator(
-            $clientInfo->getAuthenticationInfo());
-        
+        $authenticator = $this->getClientAuthenticatorFactory()->createAuthenticator($clientInfo);
         $authenticator->configureHttpRequest($httpRequest);
         
         return $httpRequest;

@@ -8,11 +8,28 @@ use Zend\Stdlib\Parameters;
 abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
 
+    /**
+     * The client ID registered at the IdP.
+     * @var string
+     */
+    protected $clientId;
+
+    /**
+     * Authenticator parameters.
+     * @var array
+     */
     protected $params;
 
 
-    public function __construct(array $params = array())
+    /**
+     * Constructor.
+     * 
+     * @param string $clientId
+     * @param array $params
+     */
+    public function __construct($clientId, array $params = array())
     {
+        $this->clientId = $clientId;
         $this->params = new Parameters($params);
     }
 }

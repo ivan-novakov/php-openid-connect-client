@@ -20,6 +20,7 @@ class SecretBasicTest extends \PHPUnit_Framework_Testcase
             ->setMethods(array(
             'encode'
         ))
+            ->disableOriginalConstructor()
             ->getMock();
         $authenticator->expects($this->once())
             ->method('encode')
@@ -47,7 +48,7 @@ class SecretBasicTest extends \PHPUnit_Framework_Testcase
         
         $authString = base64_encode($clientId . ':' . $secret);
         
-        $authenticator = new SecretBasic();
+        $authenticator = new SecretBasic($clientId);
         $this->assertSame($authString, $authenticator->encode($clientId, $secret));
     }
 }

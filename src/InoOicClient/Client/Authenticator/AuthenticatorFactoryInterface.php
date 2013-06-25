@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Client\Authenticator;
 
-use InoOicClient\Client\AuthenticationInfo;
+use InoOicClient\Client\ClientInfo;
 
 
 interface AuthenticatorFactoryInterface
@@ -12,8 +12,8 @@ interface AuthenticatorFactoryInterface
     /**
      * Creates the appropriate client authentiactor based on the provided authentication info.
      * 
-     * @param AuthenticationInfo $authenticationInfo
+     * @param ClientInfo $clientInfo
      * @reteurn AuthenticatorInterface
      */
-    public function createAuthenticator(AuthenticationInfo $authenticationInfo);
+    public function createAuthenticator(ClientInfo $clientInfo);
 }

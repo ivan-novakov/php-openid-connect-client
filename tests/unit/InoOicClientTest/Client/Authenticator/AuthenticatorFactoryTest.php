@@ -24,6 +24,8 @@ class AuthenticatorFactoryTest extends \PHPUnit_Framework_Testcase
             $this->setExpectedException($exception);
         }
         
+        $clientId = '123';
+        
         $info = $this->getMockBuilder('InoOicClient\Client\AuthenticationInfo')
             ->setMethods(array(
             'getMethod',
@@ -37,9 +39,22 @@ class AuthenticatorFactoryTest extends \PHPUnit_Framework_Testcase
             ->method('getParams')
             ->will($this->returnValue($params));
         
+        $client = $this->getMockBuilder('InoOicClient\Client\ClientInfo')
+            ->setMethods(array(
+            'getAuthenticationInfo',
+            'getClientId'
+        ))
+            ->getMock();
+        $client->expects($this->once())
+            ->method('getAuthenticationInfo')
+            ->will($this->returnValue($info));
+        $client->expects($this->once())
+            ->method('getClientId')
+            ->will($this->returnValue($clientId));
+        
         $factory = new AuthenticatorFactory();
         
-        $authenticator = $factory->createAuthenticator($info);
+        $authenticator = $factory->createAuthenticator($client);
         $this->assertInstanceOf($instance, $authenticator);
     }
 

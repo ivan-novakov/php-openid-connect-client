@@ -35,7 +35,7 @@ class SecretPostTest extends \PHPUnit_Framework_Testcase
             ->method('getPost')
             ->will($this->returnValue($postParams));
         
-        $authenticator = new SecretPost();
+        $authenticator = new SecretPost($clientId);
         $authenticator->setAuth($httpRequest, $clientId, $clientSecret);
     }
 }

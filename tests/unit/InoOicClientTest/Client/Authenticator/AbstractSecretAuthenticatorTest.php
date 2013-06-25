@@ -16,8 +16,8 @@ class AbstractSecretAuthenticatorTest extends \PHPUnit_Framework_Testcase
         $authenticator = $this->getMockBuilder('InoOicClient\Client\Authenticator\AbstractSecretAuthenticator')
             ->setConstructorArgs(
             array(
+                $clientId,
                 array(
-                    'client_id' => $clientId,
                     'client_secret' => $clientSecret
                 )
             ))

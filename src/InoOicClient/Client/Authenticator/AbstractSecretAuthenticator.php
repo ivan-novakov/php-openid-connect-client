@@ -6,8 +6,6 @@ namespace InoOicClient\Client\Authenticator;
 abstract class AbstractSecretAuthenticator extends AbstractAuthenticator
 {
 
-    const PARAM_CLIENT_ID = 'client_id';
-
     const PARAM_CLIENT_SECRET = 'client_secret';
 
 
@@ -17,17 +15,12 @@ abstract class AbstractSecretAuthenticator extends AbstractAuthenticator
      */
     public function configureHttpRequest(\Zend\Http\Request $httpRequest)
     {
-        $clientId = $this->params->get(self::PARAM_CLIENT_ID);
-        if (! $clientId) {
-            throw new Exception\MissingParameterException(self::PARAM_CLIENT_ID);
-        }
-        
         $secret = $this->params->get(self::PARAM_CLIENT_SECRET);
         if (! $secret) {
             throw new Exception\MissingParameterException(self::PARAM_CLIENT_SECRET);
         }
         
-        $this->setAuth($httpRequest, $clientId, $secret);
+        $this->setAuth($httpRequest, $this->clientId, $secret);
     }
 
 
