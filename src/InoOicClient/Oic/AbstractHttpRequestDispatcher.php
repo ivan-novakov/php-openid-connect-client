@@ -13,8 +13,11 @@ abstract class AbstractHttpRequestDispatcher
     protected $httpClient;
 
 
-    public function __construct(\Zend\Http\Client $httpClient)
+    public function __construct(\Zend\Http\Client $httpClient = null)
     {
+        if (null === $httpClient) {
+            $httpClient = new \Zend\Http\Client();
+        }
         $this->setHttpClient($httpClient);
     }
 

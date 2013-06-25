@@ -8,7 +8,7 @@ abstract class AbstractSecretAuthenticator extends AbstractAuthenticator
 
     const PARAM_CLIENT_ID = 'client_id';
 
-    const PARAM_SECRET = 'secret';
+    const PARAM_CLIENT_SECRET = 'client_secret';
 
 
     /**
@@ -22,9 +22,9 @@ abstract class AbstractSecretAuthenticator extends AbstractAuthenticator
             throw new Exception\MissingParameterException(self::PARAM_CLIENT_ID);
         }
         
-        $secret = $this->params->get(self::PARAM_SECRET);
+        $secret = $this->params->get(self::PARAM_CLIENT_SECRET);
         if (! $secret) {
-            throw new Exception\MissingParameterException(self::PARAM_SECRET);
+            throw new Exception\MissingParameterException(self::PARAM_CLIENT_SECRET);
         }
         
         $this->setAuth($httpRequest, $clientId, $secret);

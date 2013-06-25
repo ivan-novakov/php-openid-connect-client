@@ -18,7 +18,7 @@ class AbstractSecretAuthenticatorTest extends \PHPUnit_Framework_Testcase
             array(
                 array(
                     'client_id' => $clientId,
-                    'secret' => $clientSecret
+                    'client_secret' => $clientSecret
                 )
             ))
             ->setMethods(array(
