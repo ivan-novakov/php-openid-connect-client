@@ -2,10 +2,8 @@
 
 namespace InoOicClient\Oic\Token;
 
-use InoOicClient\Oic\ErrorFactory;
 use InoOicClient\Oic\Exception\ErrorResponseException;
 use InoOicClient\Oic\AbstractHttpRequestDispatcher;
-use InoOicClient\Oic\ErrorFactoryInterface;
 
 
 class Dispatcher extends AbstractHttpRequestDispatcher
@@ -20,11 +18,6 @@ class Dispatcher extends AbstractHttpRequestDispatcher
      * @var ResponseFactoryInterface
      */
     protected $responseFactory;
-
-    /**
-     * @var ErrorFactoryInterface
-     */
-    protected $errorFactory;
 
 
     /**
@@ -69,33 +62,12 @@ class Dispatcher extends AbstractHttpRequestDispatcher
     }
 
 
-    /**
-     * @return ErrorFactoryInterface
-     */
-    public function getErrorFactory()
-    {
-        if (! $this->errorFactory instanceof ErrorFactoryInterface) {
-            $this->errorFactory = new ErrorFactory();
-        }
-        return $this->errorFactory;
-    }
-
-
-    /**
-     * @param ErrorFactoryInterface $errorFactory
-     */
-    public function setErrorFactory($errorFactory)
-    {
-        $this->errorFactory = $errorFactory;
-    }
-
-
     public function sendTokenRequest(Request $request,\Zend\Http\Request $httpRequest = null)
     {
         try {
             $httpRequest = $this->getHttpRequestBuilder()->buildHttpRequest($request, $httpRequest);
         } catch (\Exception $e) {
-            throw new Exception\InvalidRequestException(
+            throw new Exception\HttpRequestBuilderException(
                 sprintf("Invalid request: [%s] %s", get_class($e), $e->getMessage()));
         }
         
@@ -107,22 +79,21 @@ class Dispatcher extends AbstractHttpRequestDispatcher
         }
         
         try {
-            $responseData = $this->decodeJson($httpResponse->getContent());
+            $responseData = $this->getJsonCoder()->decode($httpResponse->getContent());
         } catch (\Exception $e) {
             throw new Exception\InvalidResponseFormatException('The HTTP response does not contain valid JSON');
         }
         
         if (! $httpResponse->isSuccess()) {
             if (isset($responseData[Param::ERROR])) {
-                $code = $responseData[Param::ERROR];
-                $description = isset($responseData[Param::ERROR_DESCRIPTION]) ? $responseData[Param::ERROR_DESCRIPTION] : null;
-                $uri = isset($responseData[Param::ERROR_URI]) ? $responseData[Param::ERROR_URI] : null;
-                $error = $this->getErrorFactory()->createError($code, $description, $uri);
-                
+                $error = $this->getErrorFactory()->createErrorFromArray($responseData);
                 throw new ErrorResponseException($error);
+            } else {
+                throw new Exception\HttpErrorResponseException(
+                    sprintf("Error code '%d' from server", $httpResponse->getStatusCode()));
             }
         }
-        
+
         try {
             $response = $this->getResponseFactory()->createResponse($responseData);
         } catch (\Exception $e) {
@@ -161,13 +132,14 @@ class Dispatcher extends AbstractHttpRequestDispatcher
         return $httpRequest;
     }
     */
-    
-    /**
+
+/**
      * Decodes a JSON string to array.
      *
      * @param string $jsonData
      * @return array
      */
+    /*
     public function decodeJson($jsonData)
     {
         try {
@@ -177,4 +149,5 @@ class Dispatcher extends AbstractHttpRequestDispatcher
                 sprintf("Error decoding JSON: [%s] %s", get_class($e), $e->getMessage()));
         }
     }
+    */
 }
