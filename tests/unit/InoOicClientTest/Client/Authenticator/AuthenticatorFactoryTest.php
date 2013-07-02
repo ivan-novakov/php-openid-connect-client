@@ -10,6 +10,17 @@ class AuthenticatorFactoryTest extends \PHPUnit_Framework_Testcase
 {
 
 
+    public function testCreateAuthenticatorWithNoAuthenticationInfo()
+    {
+        $this->setExpectedException('InoOicClient\Client\Authenticator\Exception\MissingAuthenticationInfoException');
+        
+        $client = $this->getMock('InoOicClient\Client\ClientInfo');
+        $factory = new AuthenticatorFactory();
+        
+        $authenticator = $factory->createAuthenticator($client);
+    }
+
+
     /**
      * @dataProvider authenticatorProvider
      * 

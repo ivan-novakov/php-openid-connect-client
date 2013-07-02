@@ -4,8 +4,6 @@ namespace InoOicClient\Oic\Token;
 
 use InoOicClient\Oic\ErrorFactory;
 use InoOicClient\Oic\Exception\ErrorResponseException;
-use InoOicClient\Client\Authenticator\AuthenticatorFactory;
-use InoOicClient\Client\Authenticator\AuthenticatorFactoryInterface;
 use InoOicClient\Oic\AbstractHttpRequestDispatcher;
 use InoOicClient\Oic\ErrorFactoryInterface;
 
@@ -14,9 +12,9 @@ class Dispatcher extends AbstractHttpRequestDispatcher
 {
 
     /**
-     * @var AuthenticatorFactoryInterface
+     * @var HttpRequestBuilder
      */
-    protected $clientAuthenticatorFactory;
+    protected $httpRequestBuilder;
 
     /**
      * @var ResponseFactoryInterface
@@ -27,6 +25,27 @@ class Dispatcher extends AbstractHttpRequestDispatcher
      * @var ErrorFactoryInterface
      */
     protected $errorFactory;
+
+
+    /**
+     * @return HttpRequestBuilder
+     */
+    public function getHttpRequestBuilder()
+    {
+        if (! $this->httpRequestBuilder instanceof HttpRequestBuilder) {
+            $this->httpRequestBuilder = new HttpRequestBuilder();
+        }
+        return $this->httpRequestBuilder;
+    }
+
+
+    /**
+     * @param HttpRequestBuilder $httpRequestBuilder
+     */
+    public function setHttpRequestBuilder(HttpRequestBuilder $httpRequestBuilder)
+    {
+        $this->httpRequestBuilder = $httpRequestBuilder;
+    }
 
 
     /**
@@ -47,27 +66,6 @@ class Dispatcher extends AbstractHttpRequestDispatcher
     public function setResponseFactory($responseFactory)
     {
         $this->responseFactory = $responseFactory;
-    }
-
-
-    /**
-     * @return AuthenticatorFactoryInterface
-     */
-    public function getClientAuthenticatorFactory()
-    {
-        if (! $this->clientAuthenticatorFactory instanceof AuthenticatorFactoryInterface) {
-            $this->clientAuthenticatorFactory = new AuthenticatorFactory();
-        }
-        return $this->clientAuthenticatorFactory;
-    }
-
-
-    /**
-     * @param AuthenticatorFactoryInterface $clientAuthenticatorFactory
-     */
-    public function setClientAuthenticatorFactory(AuthenticatorFactoryInterface $clientAuthenticatorFactory)
-    {
-        $this->clientAuthenticatorFactory = $clientAuthenticatorFactory;
     }
 
 
@@ -95,7 +93,7 @@ class Dispatcher extends AbstractHttpRequestDispatcher
     public function sendTokenRequest(Request $request,\Zend\Http\Request $httpRequest = null)
     {
         try {
-            $httpRequest = $this->configureHttpRequest($request, $httpRequest);
+            $httpRequest = $this->getHttpRequestBuilder()->buildHttpRequest($request, $httpRequest);
         } catch (\Exception $e) {
             throw new Exception\InvalidRequestException(
                 sprintf("Invalid request: [%s] %s", get_class($e), $e->getMessage()));
@@ -134,8 +132,8 @@ class Dispatcher extends AbstractHttpRequestDispatcher
         
         return $response;
     }
-
-
+    
+    /*
     public function configureHttpRequest(Request $request,\Zend\Http\Request $httpRequest = null)
     {
         if (null === $httpRequest) {
@@ -162,8 +160,8 @@ class Dispatcher extends AbstractHttpRequestDispatcher
         
         return $httpRequest;
     }
-
-
+    */
+    
     /**
      * Decodes a JSON string to array.
      *

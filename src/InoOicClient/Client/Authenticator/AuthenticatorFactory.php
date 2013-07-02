@@ -19,10 +19,15 @@ class AuthenticatorFactory implements AuthenticatorFactoryInterface
         $authenticator = null;
         
         $authenticationInfo = $clientInfo->getAuthenticationInfo();
-        $clientId = $clientInfo->getClientId();
+        if (! $authenticationInfo instanceof AuthenticationInfo) {
+            throw new Exception\MissingAuthenticationInfoException(
+                'Client information does not contain any authentication info');
+        }
         
         $authMethod = $authenticationInfo->getMethod();
         $authParams = $authenticationInfo->getParams();
+        
+        $clientId = $clientInfo->getClientId();
         
         switch ($authMethod) {
             
