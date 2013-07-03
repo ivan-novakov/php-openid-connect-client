@@ -1,7 +1,7 @@
 <?php
 use InoOicClient\Oic\Authorization;
 use InoOicClient\Oic\Token;
-use InoOicClient\Server\ServerInfo;
+use InoOicClient\Oic\UserInfo;
 use InoOicClient\Client\ClientInfo;
 use InoOicClient\Oic\Authorization\State\Manager;
 use InoOicClient\Oic\Authorization\Exception\ErrorResponseException;
@@ -21,7 +21,7 @@ $dispatcher->setStateManager($stateManager);
 
 if (! isset($_GET['redirect'])) {
     
-    $request = new Authorization\Request($clientInfo, 'code', 'openid');
+    $request = new Authorization\Request($clientInfo, 'code', 'openid profile email');
     
     $uri = $dispatcher->createAuthorizationRequestUri($request);
     
@@ -50,6 +50,21 @@ if (! isset($_GET['redirect'])) {
             $tokenResponse = $tokenDispatcher->sendTokenRequest($tokenRequest);
             _dump($tokenResponse);
             printf("Access token: %s<br>", $tokenResponse->getAccessToken());
+            
+            $userInfoRequest = new UserInfo\Request();
+            $userInfoRequest->setAccessToken($tokenResponse->getAccessToken());
+            $userInfoRequest->setClientInfo($clientInfo);
+            
+            $userInfoDispatcher = new UserInfo\Dispatcher($httpClient);
+            
+            try {
+                $userInfoResponse = $userInfoDispatcher->sendUserInfoRequest($userInfoRequest);
+                _dump($userInfoResponse->getClaims());
+                printf("User info: %s", \Zend\Json\Json::encode($userInfoResponse->getClaims(), \Zend\Json\Json::TYPE_ARRAY));
+            } catch (\Exception $e) {
+                printf("Error: [%s] %s<br>", get_class($e), $e->getMessage());
+                _dump("$e");
+            }
         } catch (\Exception $e) {
             printf("Error: [%s] %s<br>", get_class($e), $e->getMessage());
             _dump("$e");

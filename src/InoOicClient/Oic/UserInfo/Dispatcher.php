@@ -1,13 +1,12 @@
 <?php
 
-namespace InoOicClient\Oic\Token;
+namespace InoOicClient\Oic\UserInfo;
 
 use Zend\Http;
-use InoOicClient\Oic\Exception\ErrorResponseException;
-use InoOicClient\Oic\AbstractHttpRequestDispatcher;
 use InoOicClient\Oic\Exception\HttpRequestBuilderException;
 use InoOicClient\Oic\Exception\HttpClientException;
-use InoOicClient\Oic\Exception\InvalidResponseFormatException;
+use InoOicClient\Oic\Exception\ErrorResponseException;
+use InoOicClient\Oic\AbstractHttpRequestDispatcher;
 
 
 class Dispatcher extends AbstractHttpRequestDispatcher
@@ -25,7 +24,7 @@ class Dispatcher extends AbstractHttpRequestDispatcher
 
 
     /**
-     * @return HttpRequestBuilder
+     * @return HttpRequestBuilder $httpRequestBuilder
      */
     public function getHttpRequestBuilder()
     {
@@ -67,15 +66,16 @@ class Dispatcher extends AbstractHttpRequestDispatcher
 
 
     /**
-     * Sends a token request.
+     * Sends a userinfo request and returns the response.
      * 
      * @param Request $request
-     * @param \Zend\Http\Request $httpRequest
+     * @param Http\Request $httpRequest
      * @throws HttpRequestBuilderException
+     * @throws HttpClientException
      * @throws ErrorResponseException
      * @return Response
      */
-    public function sendTokenRequest(Request $request, Http\Request $httpRequest = null)
+    public function sendUserInfoRequest(Request $request, Http\Request $httpRequest = null)
     {
         try {
             $httpRequest = $this->getHttpRequestBuilder()->buildHttpRequest($request, $httpRequest);

@@ -33,24 +33,24 @@ class DispatcherTest extends \PHPUnit_Framework_Testcase
     }
 
 
-    public function testGetResponseFactoryWithImplicitValue()
+    public function testGetResponseHandlerWithImplicitValue()
     {
-        $implicitFactory = $this->dispatcher->getResponseFactory();
-        $this->assertInstanceOf('InoOicClient\Oic\Token\ResponseFactoryInterface', $implicitFactory);
+        $handler = $this->dispatcher->getResponseHandler();
+        $this->assertInstanceOf('InoOicClient\Oic\Token\ResponseHandler', $handler);
     }
 
 
-    public function testSetResponseFactory()
+    public function testSetResponseHandler()
     {
-        $responseFactory = $this->createResponseFactoryMock();
-        $this->dispatcher->setResponseFactory($responseFactory);
-        $this->assertSame($responseFactory, $this->dispatcher->getResponseFactory());
+        $handler = $this->createResponseHandlerMock();
+        $this->dispatcher->setResponseHandler($handler);
+        $this->assertSame($handler, $this->dispatcher->getResponseHandler());
     }
 
 
     public function testSendTokenRequestWithHttpRequestBuilderException()
     {
-        $this->setExpectedException('InoOicClient\Oic\Token\Exception\HttpRequestBuilderException');
+        $this->setExpectedException('InoOicClient\Oic\Exception\HttpRequestBuilderException');
         
         $request = $this->createTokenRequestMock();
         $builder = $this->createHttpRequestBuilderMock($request, null, true);
@@ -59,153 +59,61 @@ class DispatcherTest extends \PHPUnit_Framework_Testcase
     }
 
 
-    public function testSendTokenRequestWithHttpException()
-    {
-        $this->setExpectedException('InoOicClient\Oic\Token\Exception\HttpClientException');
-        
-        $httpRequest = $this->createHttpRequestMock();
-        
-        $request = $this->createTokenRequestMock();
-        $builder = $this->createHttpRequestBuilderMock($request, $httpRequest);
-        $this->dispatcher->setHttpRequestBuilder($builder);
-        
-        $httpClient = $this->createHttpClientMock($httpRequest, null, true);
-        $this->dispatcher->setHttpClient($httpClient);
-        
-        $this->dispatcher->sendTokenRequest($request);
-    }
-
-
-    public function testSendTokenRequestWithInvalidJsonResponse()
-    {
-        $this->setExpectedException('InoOicClient\Oic\Token\Exception\InvalidResponseFormatException');
-        
-        $jsonString = '{"foo": "bar"}';
-        $httpRequest = $this->createHttpRequestMock();
-        $httpResponse = $this->createHttpResponseMock($jsonString);
-        
-        $request = $this->createTokenRequestMock();
-        $builder = $this->createHttpRequestBuilderMock($request, $httpRequest);
-        $this->dispatcher->setHttpRequestBuilder($builder);
-        
-        $httpClient = $this->createHttpClientMock($httpRequest, $httpResponse);
-        $this->dispatcher->setHttpClient($httpClient);
-        
-        $coder = $this->createJsonCoderMock($jsonString, null, true);
-        $this->dispatcher->setJsonCoder($coder);
-        
-        $this->dispatcher->sendTokenRequest($request);
-    }
-
-
-    public function testSendTokenRequestWithErrorHttpStatus()
-    {
-        $this->setExpectedException('InoOicClient\Oic\Token\Exception\HttpErrorResponseException');
-        
-        $jsonString = '{"foo": "bar"}';
-        $responseData = array();
-        $httpRequest = $this->createHttpRequestMock();
-        $httpResponse = $this->createHttpResponseMock($jsonString, 500, true);
-        
-        $request = $this->createTokenRequestMock();
-        $builder = $this->createHttpRequestBuilderMock($request, $httpRequest);
-        $this->dispatcher->setHttpRequestBuilder($builder);
-        
-        $httpClient = $this->createHttpClientMock($httpRequest, $httpResponse);
-        $this->dispatcher->setHttpClient($httpClient);
-        
-        $coder = $this->createJsonCoderMock($jsonString, $responseData);
-        $this->dispatcher->setJsonCoder($coder);
-        
-        $this->dispatcher->sendTokenRequest($request);
-    }
-
-
-    public function testSendTokenRequestWithErrorResponse()
+    public function testSendTokenRequestWithResponseError()
     {
         $this->setExpectedException('InoOicClient\Oic\Exception\ErrorResponseException');
         
-        $jsonString = '{"foo": "bar"}';
-        $responseData = array(
-            Param::ERROR => 'server_error'
-        );
-        $httpRequest = $this->createHttpRequestMock();
-        $httpResponse = $this->createHttpResponseMock($jsonString, null, true);
-        
         $request = $this->createTokenRequestMock();
+        $httpRequest = $this->createHttpRequestMock();
+        $httpResponse = $this->createHttpResponseMock();
         $builder = $this->createHttpRequestBuilderMock($request, $httpRequest);
-        $this->dispatcher->setHttpRequestBuilder($builder);
         
-        $httpClient = $this->createHttpClientMock($httpRequest, $httpResponse);
-        $this->dispatcher->setHttpClient($httpClient);
+        $error = $this->createErrorMock();
+        $responseHandler = $this->createResponseHandlerMock($httpResponse, null, $error);
         
-        $coder = $this->createJsonCoderMock($jsonString, $responseData);
-        $this->dispatcher->setJsonCoder($coder);
-        
-        $this->dispatcher->sendTokenRequest($request);
+        $dispatcher = $this->createDispatcherMock($httpRequest, $httpResponse, $builder, $responseHandler);
+        $dispatcher->sendTokenRequest($request);
     }
 
 
-    public function testSendTokenWithInvalidResponse()
+    public function testSendTokenRequestWithValidResponse()
     {
-        $this->setExpectedException('InoOicClient\Oic\Token\Exception\InvalidResponseException');
-        
-        $jsonString = '{"foo": "bar"}';
-        $responseData = array(
-            'access_token' => 'abc'
-        );
-        
-        $httpRequest = $this->createHttpRequestMock();
-        $httpResponse = $this->createHttpResponseMock($jsonString);
-        
         $request = $this->createTokenRequestMock();
-        $builder = $this->createHttpRequestBuilderMock($request, $httpRequest);
-        $this->dispatcher->setHttpRequestBuilder($builder);
-        
-        $httpClient = $this->createHttpClientMock($httpRequest, $httpResponse);
-        $this->dispatcher->setHttpClient($httpClient);
-        
-        $coder = $this->createJsonCoderMock($jsonString, $responseData);
-        $this->dispatcher->setJsonCoder($coder);
-        
-        // $response = $this->createResponseMock();
-        $responseFactory = $this->createResponseFactoryMock($responseData, null, true);
-        $this->dispatcher->setResponseFactory($responseFactory);
-        
-        $this->dispatcher->sendTokenRequest($request);
-    }
-    
-    
-    public function testSendTokenWithValidResponse()
-    {
-        $jsonString = '{"foo": "bar"}';
-        $responseData = array(
-            'access_token' => 'abc'
-        );
-        
         $httpRequest = $this->createHttpRequestMock();
-        $httpResponse = $this->createHttpResponseMock($jsonString);
-        
-        $request = $this->createTokenRequestMock();
+        $httpResponse = $this->createHttpResponseMock();
         $builder = $this->createHttpRequestBuilderMock($request, $httpRequest);
-        $this->dispatcher->setHttpRequestBuilder($builder);
+        $response = $this->getMock('InoOicClient\Oic\Token\Response');
         
-        $httpClient = $this->createHttpClientMock($httpRequest, $httpResponse);
-        $this->dispatcher->setHttpClient($httpClient);
+        $responseHandler = $this->createResponseHandlerMock($httpResponse, $response);
         
-        $coder = $this->createJsonCoderMock($jsonString, $responseData);
-        $this->dispatcher->setJsonCoder($coder);
-        
-        $response = $this->createResponseMock();
-        $responseFactory = $this->createResponseFactoryMock($responseData, $response);
-        $this->dispatcher->setResponseFactory($responseFactory);
-        
-        $this->assertSame($response, $this->dispatcher->sendTokenRequest($request));
+        $dispatcher = $this->createDispatcherMock($httpRequest, $httpResponse, $builder, $responseHandler);
+        $this->assertSame($response, $dispatcher->sendTokenRequest($request));
     }
     
     /*
      * -------
      */
+    protected function createDispatcherMock($httpRequest, $httpResponse, $builder, $responseHandler)
+    {
+        $dispatcher = $this->getMockBuilder('InoOicClient\Oic\Token\Dispatcher')
+            ->setMethods(array(
+            'sendHttpRequest'
+        ))
+            ->getMock();
+        
+        $dispatcher->expects($this->once())
+            ->method('sendHttpRequest')
+            ->with($httpRequest)
+            ->will($this->returnValue($httpResponse));
+        
+        $dispatcher->setHttpRequestBuilder($builder);
+        
+        $dispatcher->setResponseHandler($responseHandler);
+        
+        return $dispatcher;
+    }
+
+
     protected function createHttpRequestBuilderMock($tokenRequest = null, $httpRequest = null, $throwException = false)
     {
         $builder = $this->getMock('InoOicClient\Oic\Token\HttpRequestBuilder');
@@ -270,35 +178,6 @@ class DispatcherTest extends \PHPUnit_Framework_Testcase
     }
 
 
-    protected function createResponseFactoryMock($responseData = null, $response = null, $throwException = false)
-    {
-        $factory = $this->getMock('InoOicClient\Oic\Token\ResponseFactoryInterface');
-        
-        if ($throwException) {
-            $factory->expects($this->once())
-                ->method('createResponse')
-                ->with($responseData)
-                ->will($this->throwException(new \Exception()));
-        }
-        
-        if ($responseData && $response) {
-            $factory->expects($this->once())
-                ->method('createResponse')
-                ->with($responseData)
-                ->will($this->returnValue($response));
-        }
-        
-        return $factory;
-    }
-
-
-    protected function createClientAuthenticatorFactoryMock()
-    {
-        $factory = $this->getMock('InoOicClient\Client\Authenticator\AuthenticatorFactoryInterface');
-        return $factory;
-    }
-
-
     protected function createTokenRequestMock()
     {
         $request = $this->getMockBuilder('InoOicClient\Oic\Token\Request')->getMock();
@@ -306,42 +185,38 @@ class DispatcherTest extends \PHPUnit_Framework_Testcase
     }
 
 
-    protected function createHttpClientMock($httpRequest, $httpResponse = null, $throwException = false)
+    protected function createResponseHandlerMock($httpResponse = null, $response = null, $error = null)
     {
-        $httpClient = $this->getMock('Zend\Http\Client');
+        $handler = $this->getMock('InoOicClient\Oic\Token\ResponseHandler');
         
         if ($httpResponse) {
-            $httpClient->expects($this->once())
-                ->method('send')
-                ->with($httpRequest)
-                ->will($this->returnValue($httpResponse));
-        } elseif ($throwException) {
-            $httpClient->expects($this->once())
-                ->method('send')
-                ->with($httpRequest)
-                ->will($this->throwException(new \Exception()));
+            $handler->expects($this->once())
+                ->method('handleResponse')
+                ->with($httpResponse);
+            
+            if ($response) {
+                $handler->expects($this->once())
+                    ->method('isError')
+                    ->will($this->returnValue(false));
+                $handler->expects($this->once())
+                    ->method('getResponse')
+                    ->will($this->returnValue($response));
+            } elseif ($error) {
+                $handler->expects($this->once())
+                    ->method('isError')
+                    ->will($this->returnValue(true));
+                $handler->expects($this->once())
+                    ->method('getError')
+                    ->will($this->returnValue($error));
+            }
         }
-        
-        return $httpClient;
+        return $handler;
     }
 
 
-    protected function createJsonCoderMock($jsonString, $result = null, $throwException = false)
+    public function createErrorMock()
     {
-        $coder = $this->getMock('InoOicClient\Json\Coder');
-        
-        if ($throwException) {
-            $coder->expects($this->once())
-                ->method('decode')
-                ->with($jsonString)
-                ->will($this->throwException(new \Exception()));
-        } elseif ($result) {
-            $coder->expects($this->once())
-                ->method('decode')
-                ->with($jsonString)
-                ->will($this->returnValue($result));
-        }
-        
-        return $coder;
+        $error = $this->getMock('InoOicClient\Oic\Error');
+        return $error;
     }
 }

@@ -3,6 +3,7 @@
 namespace InoOicClient\Oic;
 
 use InoOicClient\Json\Coder;
+use InoOicClient\Oic\Exception\HttpClientException;
 
 
 abstract class AbstractHttpRequestDispatcher
@@ -92,5 +93,25 @@ abstract class AbstractHttpRequestDispatcher
     public function setJsonCoder(Coder $jsonCoder)
     {
         $this->jsonCoder = $jsonCoder;
+    }
+
+
+    /**
+     * Sends the HTTP request and returns the response.
+     * 
+     * @param \Zend\Http\Request $httpRequest
+     * @throws HttpClientException
+     * @return \Zend\Http\Response
+     */
+    public function sendHttpRequest(\Zend\Http\Request $httpRequest)
+    {
+        try {
+            $httpResponse = $this->httpClient->send($httpRequest);
+        } catch (\Exception $e) {
+            throw new HttpClientException(
+                sprintf("Exception during HTTP request: [%s] %s", get_class($e), $e->getMessage()));
+        }
+        
+        return $httpResponse;
     }
 }

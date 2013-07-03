@@ -2,7 +2,6 @@
 
 namespace InoOicClient\Oic\Authorization;
 
-use InoOicClient\Server\ServerInfo;
 use InoOicClient\Client\ClientInfo;
 use InoOicClient\Entity\AbstractEntity;
 use InoOicClient\Util\ArgumentNormalizer;
