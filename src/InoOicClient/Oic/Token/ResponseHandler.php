@@ -5,6 +5,8 @@ namespace InoOicClient\Oic\Token;
 use InoOicClient\Oic\AbstractResponseHandler;
 use InoOicClient\Oic\Exception\HttpErrorStatusException;
 use InoOicClient\Oic\Exception\InvalidResponseFormatException;
+use InoOicClient\Oic\ErrorFactoryInterface;
+use InoOicClient\Json\Coder;
 
 
 class ResponseHandler extends AbstractResponseHandler
