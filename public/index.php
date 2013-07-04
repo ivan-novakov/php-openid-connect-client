@@ -1,4 +1,6 @@
 <?php
+use InoOicClient\Http\ClientFactory;
+
 use InoOicClient\Oic\Authorization;
 use InoOicClient\Oic\Token;
 use InoOicClient\Oic\UserInfo;
@@ -60,11 +62,13 @@ if (! isset($_GET['redirect'])) {
             try {
                 $userInfoResponse = $userInfoDispatcher->sendUserInfoRequest($userInfoRequest);
                 _dump($userInfoResponse->getClaims());
-                printf("User info: %s", \Zend\Json\Json::encode($userInfoResponse->getClaims(), \Zend\Json\Json::TYPE_ARRAY));
+                printf("User info: %s", 
+                    \Zend\Json\Json::encode($userInfoResponse->getClaims(), \Zend\Json\Json::TYPE_ARRAY));
             } catch (\Exception $e) {
                 printf("Error: [%s] %s<br>", get_class($e), $e->getMessage());
                 _dump("$e");
             }
+            _dump($httpClient);
         } catch (\Exception $e) {
             printf("Error: [%s] %s<br>", get_class($e), $e->getMessage());
             _dump("$e");
@@ -82,20 +86,6 @@ if (! isset($_GET['redirect'])) {
 
 function _createHttpClient()
 {
-    $adapter = new Client\Adapter\Socket();
-    $client = new Client();
-    $client->setOptions(array(
-        'maxredirects' => 2,
-        'strictredirects' => true
-    ));
-    $client->setAdapter($adapter);
-    
-    $adapter->setStreamContext(
-        array(
-            'ssl' => array(
-                'cafile' => '/home/commanche/certs/accounts.google.ca-bundle.pem'
-            )
-        ));
-    
-    return $client;
+    $httpClientFactory = new ClientFactory();
+    return $httpClientFactory->createHttpClient();
 }
