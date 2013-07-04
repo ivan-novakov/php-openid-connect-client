@@ -50,9 +50,12 @@ class Request extends AbstractEntity
         $this->setScope($scope);
         $this->setState($state);
         
+        $this->fromArray($extraParams);
+        /*
         foreach ($extraParams as $paramName => $paramValue) {
             $this->setProperty($paramName, $paramValue);
         }
+        */
     }
 
 

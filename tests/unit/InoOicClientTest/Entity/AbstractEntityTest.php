@@ -2,10 +2,15 @@
 
 namespace InoOicClientTest\Entity;
 
+use InoOicClient\Entity\AbstractEntity;
+
 
 class AbstractEntityTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @var AbstractEntity
+     */
     protected $entity = null;
 
 
@@ -85,6 +90,40 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testFromArrayWithMerge()
+    {
+        $properties = array(
+            'foo' => 'bar'
+        );
+        $newProperties = array(
+            'foo2' => 'bar2'
+        );
+        $finalProperties = array(
+            'foo' => 'bar',
+            'foo2' => 'bar2'
+        );
+        $this->entity->fromArray($properties);
+        $this->assertSame($properties, $this->entity->toArray());
+        $this->entity->fromArray($newProperties);
+        $this->assertSame($finalProperties, $this->entity->toArray());
+    }
+
+
+    public function testFromArrayWithReplace()
+    {
+        $properties = array(
+            'foo' => 'bar'
+        );
+        $newProperties = array(
+            'foo2' => 'bar2'
+        );
+        $this->entity->fromArray($properties);
+        $this->assertSame($properties, $this->entity->toArray());
+        $this->entity->fromArray($newProperties, true);
+        $this->assertSame($newProperties, $this->entity->toArray());
+    }
+
+
     public function testSetUnknownProperty()
     {
         $this->setExpectedException('InoOicClient\Entity\Exception\UnknownPropertyException');
@@ -101,8 +140,8 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
         $entity = new \AbstractEntitySubclass();
         $entity->getBar();
     }
-    
-    
+
+
     public function testSetKnownProperty()
     {
         $value = 'testvalue';

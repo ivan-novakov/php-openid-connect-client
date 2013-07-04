@@ -74,8 +74,12 @@ abstract class AbstractEntity
      *
      * @param array $properties
      */
-    public function fromArray(array $properties)
+    public function fromArray(array $properties, $replace = false)
     {
+        if ($replace) {
+            $this->properties = $this->initProperties();    
+        }
+        
         foreach ($properties as $name => $value) {
             $setterName = $this->createSetterName($name);
             call_user_func_array(array(
