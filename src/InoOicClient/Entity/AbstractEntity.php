@@ -2,6 +2,7 @@
 
 namespace InoOicClient\Entity;
 
+use Zend\Stdlib\Parameters;
 use Zend\Stdlib\ArrayObject;
 
 
@@ -10,7 +11,7 @@ abstract class AbstractEntity
 
     /**
      * Entity properties.
-     * @var ArrayObject
+     * @var Parameters
      */
     protected $properties;
 
@@ -54,14 +55,14 @@ abstract class AbstractEntity
 
 
     /**
-     * Returns the entity properties as ArrayObject.
+     * Returns all entity properties.
      * 
-     * @return ArrayObject
+     * @return Parameters
      */
     public function getProperties($initialize = false)
     {
         if ($initialize || null === $this->properties) {
-            $this->properties = new ArrayObject();
+            $this->properties = $this->initProperties();
         }
         
         return $this->properties;
@@ -111,8 +112,7 @@ abstract class AbstractEntity
     public function __call($methodName, array $arguments)
     {
         if (preg_match('/^get(\w+)$/', $methodName, $matches)) {
-            $propertyName = $this->getPropertyMapper()
-                ->camelCaseToProperty($matches[1]);
+            $propertyName = $this->getPropertyMapper()->camelCaseToProperty($matches[1]);
             return $this->getProperty($propertyName);
         }
         
@@ -131,8 +131,7 @@ abstract class AbstractEntity
                     ));
             }
             
-            $propertyName = $this->getPropertyMapper()
-                ->camelCaseToProperty($methodFragment);
+            $propertyName = $this->getPropertyMapper()->camelCaseToProperty($methodFragment);
             return call_user_func_array(array(
                 $this,
                 'setProperty'
@@ -158,8 +157,7 @@ abstract class AbstractEntity
             throw new Exception\UnknownPropertyException($name);
         }
         
-        $this->getProperties()
-            ->offsetSet($name, $value);
+        $this->getProperties()->offsetSet($name, $value);
     }
 
 
@@ -192,8 +190,7 @@ abstract class AbstractEntity
      */
     protected function createSetterName($propertyName)
     {
-        return sprintf("set%s", $this->getPropertyMapper()
-            ->propertyToCamelCase($propertyName));
+        return sprintf("set%s", $this->getPropertyMapper()->propertyToCamelCase($propertyName));
     }
 
 
@@ -205,8 +202,7 @@ abstract class AbstractEntity
      */
     protected function createGetterName($propertyName)
     {
-        return sprintf("get%s", $this->getPropertyMapper()
-            ->propertyToCamelCase($propertyName));
+        return sprintf("get%s", $this->getPropertyMapper()->propertyToCamelCase($propertyName));
     }
 
 
@@ -217,5 +213,11 @@ abstract class AbstractEntity
         }
         
         return true;
+    }
+
+
+    protected function initProperties()
+    {
+        return new Parameters();
     }
 }
