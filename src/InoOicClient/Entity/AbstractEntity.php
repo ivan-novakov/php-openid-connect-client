@@ -55,7 +55,7 @@ abstract class AbstractEntity
 
 
     /**
-     * Returns all entity properties.
+     * Returns all entity properties in a parameters container.
      * 
      * @return Parameters
      */
@@ -70,14 +70,15 @@ abstract class AbstractEntity
 
 
     /**
-     * Sets the entity properties.
+     * Sets the entity properties from an array.
      *
      * @param array $properties
+     * @param boolean $replace
      */
     public function fromArray(array $properties, $replace = false)
     {
         if ($replace) {
-            $this->properties = $this->initProperties();    
+            $this->properties = $this->initProperties();
         }
         
         foreach ($properties as $name => $value) {
@@ -93,7 +94,7 @@ abstract class AbstractEntity
 
 
     /**
-     * Returns the entity properties.
+     * Returns the entity properties as an array.
      *
      * @return array
      */
@@ -157,11 +158,8 @@ abstract class AbstractEntity
      */
     protected function setProperty($name, $value)
     {
-        if (! $this->isAllowedProperty($name)) {
-            throw new Exception\UnknownPropertyException($name);
-        }
-        
-        $this->getProperties()->offsetSet($name, $value);
+        $this->checkAllowedProperty($name);
+        $this->getProperties()->set($name, $value);
     }
 
 
@@ -171,18 +169,10 @@ abstract class AbstractEntity
      * @param string $name
      * @return mixed|null
      */
-    protected function getProperty($name)
+    protected function getProperty($name, $default = null)
     {
-        if (! $this->isAllowedProperty($name)) {
-            throw new Exception\UnknownPropertyException($name);
-        }
-        
-        $properties = $this->getProperties();
-        if ($properties->offsetExists($name)) {
-            return $properties->offsetGet($name);
-        }
-        
-        return null;
+        $this->checkAllowedProperty($name);
+        return $this->getProperties()->get($name, $default);
     }
 
 
@@ -210,6 +200,26 @@ abstract class AbstractEntity
     }
 
 
+    /**
+     * Checks if the property is allowed and throws an exception otherwise.
+     * 
+     * @param string $propertyName
+     * @throws Exception\UnknownPropertyException
+     */
+    protected function checkAllowedProperty($propertyName)
+    {
+        if (! $this->isAllowedProperty($propertyName)) {
+            throw new Exception\UnknownPropertyException($propertyName);
+        }
+    }
+
+
+    /**
+     * Returns true, if the property is allowed.
+     * 
+     * @param string $propertyName
+     * @return boolean
+     */
     protected function isAllowedProperty($propertyName)
     {
         if (is_array($this->allowedProperties) && ! in_array($propertyName, $this->allowedProperties)) {
@@ -220,6 +230,11 @@ abstract class AbstractEntity
     }
 
 
+    /**
+     * Initializes an empty properties container.
+     * 
+     * @return Parameters
+     */
     protected function initProperties()
     {
         return new Parameters();
