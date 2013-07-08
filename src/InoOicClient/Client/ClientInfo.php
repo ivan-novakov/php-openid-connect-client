@@ -54,7 +54,7 @@ class ClientInfo extends AbstractEntity
     );
 
 
-    public function fromArray(array $properties)
+    public function fromArray(array $properties, $replace = false)
     {
         if (isset($properties[self::AUTHENTICATION_INFO]) && is_array($properties[self::AUTHENTICATION_INFO])) {
             $authenticationInfo = new AuthenticationInfo();

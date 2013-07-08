@@ -9,21 +9,20 @@ use InoOicClient\Entity\AbstractEntity;
  * Token request.
  * 
  * @method void setClientInfo(\InoOicClient\Client\ClientInfo $clientInfo)
- * @method void setServerInfo(\InoOicClient\Server\ServerInfo $serverInfo)
  * @method void setGrantType(string $grantType)
  * @method void setCode(string $code)
  * 
  * @method \InoOicClient\Client\ClientInfo getClientInfo()
- * @method \InoOicClient\Server\ServerInfo getServerInfo()
  * @method string getGrantType()
  * @method string getCode()
  */
 class Request extends AbstractEntity
 {
 
+    const CLIENT_INFO = 'client_info';
+
     protected $allowedProperties = array(
-        'client_info',
-        'server_info',
+        self::CLIENT_INFO,
         Param::GRANT_TYPE,
         Param::CODE
     );
