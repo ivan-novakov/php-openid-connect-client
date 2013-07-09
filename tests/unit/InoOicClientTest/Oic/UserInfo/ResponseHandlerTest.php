@@ -197,7 +197,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
                 ->method('isSuccess')
                 ->will($this->returnValue(true));
             $httpResponse->expects($this->once())
-                ->method('getContent')
+                ->method('getBody')
                 ->will($this->returnValue($content));
         }
         

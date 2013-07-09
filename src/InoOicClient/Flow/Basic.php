@@ -65,20 +65,58 @@ class Basic extends AbstractFlow
     }
 
 
+    /**
+     * Processes the "token" part of the flow:
+     * - retrieves the authorization code
+     * - retrieves the access token
+     * - retrieves user info
+     * 
+     * @return array
+     */
     public function process()
     {
-        $authorizationCode = $this->getAuthorizationCode();
-        $accessToken = $this->getAccessToken($authorizationCode);
-        return $this->getUserInfo($accessToken);
+        try {
+            $authorizationCode = $this->getAuthorizationCode();
+        } catch (\Exception $e) {
+            throw new Exception\AuthorizationException(
+                sprintf("Exception during authorization: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+        }
+        
+        try {
+            $accessToken = $this->getAccessToken($authorizationCode);
+        } catch (\Exception $e) {
+            throw new Exception\TokenRequestException(
+                sprintf("Exception during token request: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+        }
+        
+        try {
+            return $this->getUserInfo($accessToken);
+        } catch (\Exception $e) {
+            throw new Exception\UserInfoRequestException(
+                sprintf("Exception during user info request: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+        }
     }
 
 
+    /**
+     * Creates authorization request.
+     * 
+     * @param string|array $scope
+     * @param string|array $responseType
+     * @return Authorization\Request
+     */
     public function createAuthorizationRequest($scope = 'openid', $responseType = 'code')
     {
         return new Authorization\Request($this->getClientInfo(), $responseType, $scope);
     }
 
 
+    /**
+     * Creates token request.
+     * 
+     * @param string $authorizationCode
+     * @return Token\Request
+     */
     public function createTokenRequest($authorizationCode)
     {
         $tokenRequest = new Token\Request();
@@ -90,6 +128,12 @@ class Basic extends AbstractFlow
     }
 
 
+    /**
+     * Creates user info request.
+     * 
+     * @param string $accessToken
+     * @return UserInfo\Request
+     */
     public function createUserInfoRequest($accessToken)
     {
         $userInfoRequest = new UserInfo\Request();

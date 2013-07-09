@@ -2,13 +2,14 @@
 
 namespace InoOicClient\Oic\Token;
 
+use InoOicClient\Oic\AbstractHttpRequestBuilder;
 use InoOicClient\Client\Authenticator\AuthenticatorFactory;
 use InoOicClient\Client\Authenticator\AuthenticatorFactoryInterface;
 use Zend\Http;
 use InoOicClient\Client\ClientInfo;
 
 
-class HttpRequestBuilder
+class HttpRequestBuilder extends AbstractHttpRequestBuilder
 {
 
     /**
@@ -16,19 +17,9 @@ class HttpRequestBuilder
      */
     protected $clientAuthenticatorFactory;
 
-
-    /**
-     * Constructor.
-     *
-     * @param AuthenticatorFactoryInterface $clientAuthenticatorFactory            
-     */
-    public function __construct(AuthenticatorFactoryInterface $clientAuthenticatorFactory = null)
-    {
-        if (null === $clientAuthenticatorFactory) {
-            $clientAuthenticatorFactory = new AuthenticatorFactory();
-        }
-        $this->setClientAuthenticatorFactory($clientAuthenticatorFactory);
-    }
+    protected $defaultHeaders = array(
+        'Content-Type' => 'application/x-www-form-urlencoded'
+    );
 
 
     /**
@@ -37,6 +28,9 @@ class HttpRequestBuilder
      */
     public function getClientAuthenticatorFactory()
     {
+        if (! $this->clientAuthenticatorFactory instanceof AuthenticatorFactoryInterface) {
+            $this->clientAuthenticatorFactory = new AuthenticatorFactory();
+        }
         return $this->clientAuthenticatorFactory;
     }
 
@@ -81,11 +75,8 @@ class HttpRequestBuilder
                 Param::CODE => $request->getCode()
             ));
         
-        // $httpRequest->getHeaders()->addHeaderLine('Content-Type', 'application/x-www-form-urlencoded');
-        $httpRequest->getHeaders()->addHeaders(
-            array(
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ));
+        $headers = array_merge($this->defaultHeaders, $this->options->get(self::OPT_HEADERS, array()));
+        $httpRequest->getHeaders()->addHeaders($headers);
         
         $authenticator = $this->getClientAuthenticatorFactory()->createAuthenticator($clientInfo);
         $authenticator->configureHttpRequest($httpRequest);

@@ -132,7 +132,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
         
         if ($content) {
             $httpResponse->expects($this->once())
-                ->method('getContent')
+                ->method('getBody')
                 ->will($this->returnValue($content));
         }
         

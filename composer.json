@@ -1,9 +1,39 @@
 {
     "name" : "ivan-novakov/php-openid-connect-client",
-
+	"description" : "OAuth2/OpenID Connect client library",
+	"type": "library",
+	"license": "BSD-3-Clause",
+	"homepage": "https://github.com/ivan-novakov/php-openid-connect-client",
+	
+	"keywords": [
+		"oauth2",
+		"openid connect",
+		"authentication",
+		"authorization",
+		"client",
+		"library",
+		"zf2",
+		"zend framework"
+	],
+	
+	"authors": [{
+		"name": "Ivan Novakov",
+		"homepage": "http://novakov.cz/"
+	}],
+	
+	"repositories": [{
+        "type": "composer",
+        "url": "https://packages.zendframework.com/"
+    }],
+	
     "require" : {
         "php" : ">=5.3.3",
-        "zendframework/zendframework" : ">=2.2.1"
+        "zendframework/zend-http" : ">=2.2.1",
+        "zendframework/zend-stdlib" : ">=2.2.1",
+        "zendframework/zend-filter" : ">=2.2.1",
+        "zendframework/zend-session" : ">=2.2.1",
+        "zendframework/zend-json" : ">=2.2.1",
+        "zendframework/zend-crypt" : ">=2.2.1"
     },
 
     "autoload" : {

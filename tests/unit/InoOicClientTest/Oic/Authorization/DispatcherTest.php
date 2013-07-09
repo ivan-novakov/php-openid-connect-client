@@ -62,6 +62,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         
         $dispatcher = new Dispatcher($uriGenerator);
         $this->assertSame($uri, $dispatcher->createAuthorizationRequestUri($request));
+        $this->assertSame($request, $dispatcher->getLastRequest());
     }
 
 
@@ -88,6 +89,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $dispatcher->setStateManager($stateManager);
         
         $this->assertSame($uri, $dispatcher->createAuthorizationRequestUri($request));
+        $this->assertSame($request, $dispatcher->getLastRequest());
     }
 
 
@@ -112,6 +114,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($code, $error->getCode());
             $this->assertSame($desc, $error->getDescription());
             $this->assertSame($uri, $error->getUri());
+            $this->assertSame($httpRequest, $dispatcher->getLastHttpRequestFromServer());
             return;
         }
         
@@ -134,6 +137,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $dispatcher->setStateManager($stateManager);
         
         $dispatcher->getAuthorizationResponse($httpRequest);
+        $this->assertSame($httpRequest, $dispatcher->getLastHttpRequestFromServer());
     }
 
 
@@ -149,6 +153,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         ));
         
         $dispatcher->getAuthorizationResponse($httpRequest);
+        $this->assertSame($httpRequest, $dispatcher->getLastHttpRequestFromServer());
     }
 
 
@@ -159,6 +164,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $dispatcher = new Dispatcher();
         $httpRequest = $this->createHttpRequestMock();
         $dispatcher->getAuthorizationResponse($httpRequest);
+        $this->assertSame($httpRequest, $dispatcher->getLastHttpRequestFromServer());
     }
 
 
@@ -179,6 +185,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $dispatcher->setResponseFactory($responseFactory);
         
         $this->assertSame($response, $dispatcher->getAuthorizationResponse($httpRequest));
+        $this->assertSame($httpRequest, $dispatcher->getLastHttpRequestFromServer());
+        $this->assertSame($response, $dispatcher->getLastResponse());
     }
 
 
@@ -205,6 +213,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $dispatcher->setStateManager($stateManager);
         
         $this->assertSame($response, $dispatcher->getAuthorizationResponse($httpRequest));
+        $this->assertSame($httpRequest, $dispatcher->getLastHttpRequestFromServer());
+        $this->assertSame($response, $dispatcher->getLastResponse());
     }
     
     /*

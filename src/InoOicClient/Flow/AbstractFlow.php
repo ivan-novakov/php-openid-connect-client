@@ -20,6 +20,8 @@ abstract class AbstractFlow
 
     const OPT_CLIENT_INFO = 'client_info';
 
+    const OPT_TOKEN_DISPATCHER = 'token_dispatcher';
+
     /**
      * @var Parameters
      */
@@ -149,7 +151,8 @@ abstract class AbstractFlow
     public function getTokenDispatcher()
     {
         if (! $this->tokenDispatcher instanceof Token\Dispatcher) {
-            $this->tokenDispatcher = new Token\Dispatcher($this->getHttpClient());
+            $this->tokenDispatcher = new Token\Dispatcher($this->getHttpClient(), 
+                $this->options->get(self::OPT_TOKEN_DISPATCHER, array()));
         }
         return $this->tokenDispatcher;
     }
