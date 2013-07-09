@@ -65,6 +65,14 @@ class Basic extends AbstractFlow
     }
 
 
+    /**
+     * Processes the "token" part of the flow:
+     * - retrieves the authorization code
+     * - retrieves the access token
+     * - retrieves user info
+     * 
+     * @return array
+     */
     public function process()
     {
         $authorizationCode = $this->getAuthorizationCode();
@@ -73,12 +81,25 @@ class Basic extends AbstractFlow
     }
 
 
+    /**
+     * Creates authorization request.
+     * 
+     * @param string|array $scope
+     * @param string|array $responseType
+     * @return Authorization\Request
+     */
     public function createAuthorizationRequest($scope = 'openid', $responseType = 'code')
     {
         return new Authorization\Request($this->getClientInfo(), $responseType, $scope);
     }
 
 
+    /**
+     * Creates token request.
+     * 
+     * @param string $authorizationCode
+     * @return Token\Request
+     */
     public function createTokenRequest($authorizationCode)
     {
         $tokenRequest = new Token\Request();
@@ -90,6 +111,12 @@ class Basic extends AbstractFlow
     }
 
 
+    /**
+     * Creates user info request.
+     * 
+     * @param string $accessToken
+     * @return UserInfo\Request
+     */
     public function createUserInfoRequest($accessToken)
     {
         $userInfoRequest = new UserInfo\Request();
