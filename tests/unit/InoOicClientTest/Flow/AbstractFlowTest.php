@@ -70,12 +70,20 @@ class AbstractFlowTest extends \PHPUnit_Framework_Testcase
 
     public function testGetTokenDispatcherWithImplicitValue()
     {
-        $flow = $this->createFlow();
+        $tokenDispatcherOptions = array(
+            'foo' => 'bar'
+        );
+        $options = array(
+            'token_dispatcher' => $tokenDispatcherOptions
+        );
+        
+        $flow = $this->createFlow($options);
         $httpClient = $this->createHttpClientMock();
         $flow->setHttpClient($httpClient);
         $dispatcher = $flow->getTokenDispatcher();
         $this->assertInstanceOf('InoOicClient\Oic\Token\Dispatcher', $dispatcher);
         $this->assertSame($httpClient, $dispatcher->getHttpClient());
+        $this->assertSame($tokenDispatcherOptions, $dispatcher->getOptions()->toArray());
     }
 
 

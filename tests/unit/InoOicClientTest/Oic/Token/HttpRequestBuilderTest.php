@@ -42,8 +42,15 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_Testcase
         $redirectUri = 'https://client/redirect';
         $method = 'POST';
         $headers = array(
-            'Content-Type' => 'application/x-www-form-urlencoded'
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'foo' => 'bar'
         );
+        $builderOptions = array(
+            'headers' => array(
+                'foo' => 'bar'
+            )
+        );
+        $this->builder->setOptions($builderOptions);
         
         $clientInfo = $this->createClientInfoMock($endpoint, $clientId, $redirectUri);
         $tokenRequest = $this->createTokenRequestMock($clientInfo, $code, $grantType);
@@ -65,8 +72,8 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_Testcase
         
         $builtHttpRequest = $this->builder->buildHttpRequest($tokenRequest, $httpRequest);
     }
-    
-    
+
+
     public function testBuildHttpRequestWithInvalidRequest()
     {
         $this->setExpectedException('InoOicClient\Oic\Token\Exception\InvalidRequestException');

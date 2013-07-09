@@ -2,6 +2,9 @@
 
 namespace InoOicClient\Oic;
 
+use Zend\Stdlib\ArrayUtils;
+
+use Zend\Stdlib\Parameters;
 use InoOicClient\Json\Coder;
 use InoOicClient\Oic\Exception\HttpClientException;
 use Zend\Http;
@@ -12,6 +15,13 @@ use Zend\Http;
  */
 abstract class AbstractHttpRequestDispatcher
 {
+
+    const OPT_HTTP_OPTIONS = 'http_options';
+
+    /**
+     * @var Parameters
+     */
+    protected $options;
 
     /**
      * HTTP client.
@@ -40,13 +50,43 @@ abstract class AbstractHttpRequestDispatcher
      * Constructor.
      * 
      * @param Http\Client $httpClient
+     * @param array|\Traversable $options
      */
-    public function __construct(Http\Client $httpClient = null)
+    public function __construct(Http\Client $httpClient = null, $options = array())
     {
         if (null === $httpClient) {
             $httpClient = new Http\Client();
         }
         $this->setHttpClient($httpClient);
+        $this->setOptions($options);
+    }
+
+
+    /**
+     * Sets the options.
+     * 
+     * @param array|\Traversable $options
+     * @throws \InvalidArgumentException
+     */
+    public function setOptions($options)
+    {
+        if (! is_array($options) && ! $options instanceof \Traversable) {
+            throw new \InvalidArgumentException('The options must be array or Traversable');
+        }
+        
+        $options = ArrayUtils::iteratorToArray($options);
+        $this->options = new Parameters($options);
+    }
+
+
+    /**
+     * Returns the options.
+     * 
+     * @return Parameters
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
 

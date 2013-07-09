@@ -23,14 +23,31 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
     public function testConstructor()
     {
         $httpClient = $this->getMock('Zend\Http\Client');
+        $options = array(
+            'foo' => 'bar'
+        );
         
         $dispatcher = $this->getMockBuilder('InoOicClient\Oic\AbstractHttpRequestDispatcher')
             ->setConstructorArgs(array(
-            $httpClient
+            $httpClient,
+            $options
         ))
             ->getMockForAbstractClass();
         
         $this->assertSame($httpClient, $dispatcher->getHttpClient());
+        $this->assertSame($options, $dispatcher->getOptions()
+            ->toArray());
+    }
+
+
+    public function testSetOptions()
+    {
+        $options = array(
+            'foo' => 'bar'
+        );
+        $this->dispatcher->setOptions($options);
+        $this->assertSame($options, $this->dispatcher->getOptions()
+            ->toArray());
     }
 
 

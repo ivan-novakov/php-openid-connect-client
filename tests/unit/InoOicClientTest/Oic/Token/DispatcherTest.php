@@ -20,8 +20,16 @@ class DispatcherTest extends \PHPUnit_Framework_Testcase
 
     public function testGetHttpRequestBuilderWithImplicitValue()
     {
+        $httpOptions = array(
+            'foo' => 'bar'
+        );
+        
+        $this->dispatcher->setOptions(array(
+            Dispatcher::OPT_HTTP_OPTIONS => $httpOptions
+        ));
         $builder = $this->dispatcher->getHttpRequestBuilder();
         $this->assertInstanceOf('InoOicClient\Oic\Token\HttpRequestBuilder', $builder);
+        $this->assertSame($httpOptions, $builder->getOptions()->toArray());
     }
 
 
