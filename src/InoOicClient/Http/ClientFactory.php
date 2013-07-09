@@ -9,7 +9,7 @@ use Zend\Stdlib\ArrayUtils;
 /**
  * Creates and configures the Zend\Http\Client.
  */
-class ClientFactory
+class ClientFactory implements ClientFactoryInterface
 {
 
     /**
