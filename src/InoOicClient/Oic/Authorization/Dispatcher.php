@@ -4,8 +4,10 @@ namespace InoOicClient\Oic\Authorization;
 
 use InoOicClient\Oic\Exception\ErrorResponseException;
 use InoOicClient\Oic\Error;
-use Zend\Http;
 use InoOicClient\Oic\Authorization\State;
+use InoOicClient\Oic\ErrorFactoryInterface;
+use InoOicClient\Oic\ErrorFactory;
+use Zend\Http;
 
 
 /**
@@ -31,6 +33,27 @@ class Dispatcher
      * @var ResponseFactoryInterface
      */
     protected $responseFactory;
+
+    /**
+     * @var ErrorFactoryInterface
+     */
+    protected $errorFactory;
+
+    /**
+     * @var Request
+     */
+    protected $lastRequest;
+
+    /**
+     * @var Response
+     */
+    protected $lastResponse;
+
+    /**
+     * The last HTTP request from the server, sent to the redirect URI endpoint.
+     * @var Http\Request
+     */
+    protected $lastHttpRequestFromServer;
 
 
     /**
@@ -119,6 +142,27 @@ class Dispatcher
 
 
     /**
+     * @return ErrorFactoryInterface
+     */
+    public function getErrorFactory()
+    {
+        if (! $this->errorFactory instanceof ErrorFactoryInterface) {
+            $this->errorFactory = new ErrorFactory();
+        }
+        return $this->errorFactory;
+    }
+
+
+    /**
+     * @param ErrorFactoryInterface $errorFactory
+     */
+    public function setErrorFactory($errorFactory)
+    {
+        $this->errorFactory = $errorFactory;
+    }
+
+
+    /**
      * Generates a request URI for the corresponding authorization request.
      * 
      * @param Request $request
@@ -131,6 +175,7 @@ class Dispatcher
             $request->setState($state->getHash());
         }
         
+        $this->setLastRequest($request);
         return $this->getUriGenerator()->createAuthorizationRequestUri($request);
     }
 
@@ -149,11 +194,11 @@ class Dispatcher
         if (null === $httpRequest) {
             $httpRequest = new Http\PhpEnvironment\Request();
         }
-        
+        $this->setLastHttpRequestFromServer($httpRequest);
         $params = $httpRequest->getQuery();
         
         if ($errorCode = $params->get(Param::ERROR)) {
-            $error = $this->createError($errorCode, $params->get(Param::ERROR_DESCRIPTION), 
+            $error = $this->getErrorFactory()->createError($errorCode, $params->get(Param::ERROR_DESCRIPTION), 
                 $params->get(Param::ERROR_URI));
             
             throw new ErrorResponseException($error);
@@ -179,17 +224,72 @@ class Dispatcher
         }
         
         $response = $this->getResponseFactory()->createResponse($code, $stateHash);
+        $this->setLastResponse($response);
         return $response;
     }
 
 
-    protected function createError($code, $description = null, $uri = null)
+    /**
+     * Returns the last authorization request.
+     * 
+     * @return Request
+     */
+    public function getLastRequest()
     {
-        $error = new Error();
-        $error->setCode($code);
-        $error->setDescription($description);
-        $error->setUri($uri);
-        
-        return $error;
+        return $this->lastRequest;
+    }
+
+
+    /**
+     * Returns the last (successful) authorization response.
+     * 
+     * @return Response
+     */
+    public function getLastResponse()
+    {
+        return $this->lastResponse;
+    }
+
+
+    /**
+     * Returns the last HTTP request from the server sent to the "redirect URI" endpoint.
+     * @return Http\Request
+     */
+    public function getLastHttpRequestFromServer()
+    {
+        return $this->lastHttpRequestFromServer;
+    }
+
+
+    /**
+     * Sets the last authorization request.
+     * 
+     * @param Request $request
+     */
+    protected function setLastRequest(Request $request)
+    {
+        $this->lastRequest = $request;
+    }
+
+
+    /**
+     * Sets the last authorization response.
+     * 
+     * @param Response $response
+     */
+    protected function setLastResponse(Response $response)
+    {
+        $this->lastResponse = $response;
+    }
+
+
+    /**
+     * Sets the last HTTP request from the server sent to the "redirect URI" endpoint.
+     * 
+     * @param Http\Request $httpRequest
+     */
+    protected function setLastHttpRequestFromServer(Http\Request $httpRequest)
+    {
+        $this->lastHttpRequestFromServer = $httpRequest;
     }
 }

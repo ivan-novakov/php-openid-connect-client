@@ -52,21 +52,6 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
     }
 
 
-    public function testGetErrorFactoryWithImplicitValue()
-    {
-        $errorFactory = $this->dispatcher->getErrorFactory();
-        $this->assertInstanceOf('InoOicClient\Oic\ErrorFactoryInterface', $errorFactory);
-    }
-
-
-    public function testSetErrorFactory()
-    {
-        $errorFactory = $this->createErrorFactoryMock();
-        $this->dispatcher->setErrorFactory($errorFactory);
-        $this->assertSame($errorFactory, $this->dispatcher->getErrorFactory());
-    }
-
-
     public function testGetJsonCoderWithImplicitValue()
     {
         $jsonCoder = $this->dispatcher->getJsonCoder();
@@ -79,6 +64,41 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
         $jsonCoder = $this->createJsonCoderMock();
         $this->dispatcher->setJsonCoder($jsonCoder);
         $this->assertSame($jsonCoder, $this->dispatcher->getJsonCoder());
+    }
+
+
+    public function testSendHttpRequestWithException()
+    {
+        $this->setExpectedException('InoOicClient\Oic\Exception\HttpClientException');
+        
+        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpClient->expects($this->once())
+            ->method('send')
+            ->with($httpRequest)
+            ->will($this->throwException(new \Exception()));
+        
+        $this->dispatcher->setHttpClient($httpClient);
+        $this->dispatcher->sendHttpRequest($httpRequest);
+        
+        $this->assertSame($httpRequest, $this->dispatcher->getLastHttpRequest());
+    }
+
+
+    public function testSendHttpRequest()
+    {
+        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpResponse = $this->getMock('Zend\Http\Response');
+        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpClient->expects($this->once())
+            ->method('send')
+            ->with($httpRequest)
+            ->will($this->returnValue($httpResponse));
+        
+        $this->dispatcher->setHttpClient($httpClient);
+        $this->assertSame($httpResponse, $this->dispatcher->sendHttpRequest($httpRequest));
+        $this->assertSame($httpRequest, $this->dispatcher->getLastHttpRequest());
+        $this->assertSame($httpResponse, $this->dispatcher->getLastHttpResponse());
     }
     
     /*

@@ -4,6 +4,7 @@ namespace InoOicClient\Oic;
 
 use InoOicClient\Json\Coder;
 use InoOicClient\Oic\Exception\HttpClientException;
+use Zend\Http;
 
 
 abstract class AbstractHttpRequestDispatcher
@@ -11,14 +12,9 @@ abstract class AbstractHttpRequestDispatcher
 
     /**
      * HTTP client.
-     * @var \Zend\Http\Client
+     * @var Http\Client
      */
     protected $httpClient;
-
-    /**
-     * @var ErrorFactoryInterface
-     */
-    protected $errorFactory;
 
     /**
      * JSON coder/decoder.
@@ -26,18 +22,33 @@ abstract class AbstractHttpRequestDispatcher
      */
     protected $jsonCoder;
 
+    /**
+     * @var Http\Request
+     */
+    protected $lastHttpRequest;
 
-    public function __construct(\Zend\Http\Client $httpClient = null)
+    /**
+     * @var Http\Response
+     */
+    protected $lastHttpResponse;
+
+
+    /**
+     * Constructor.
+     * 
+     * @param Http\Client $httpClient
+     */
+    public function __construct(Http\Client $httpClient = null)
     {
         if (null === $httpClient) {
-            $httpClient = new \Zend\Http\Client();
+            $httpClient = new Http\Client();
         }
         $this->setHttpClient($httpClient);
     }
 
 
     /**
-     * @return \Zend\Http\Client
+     * @return Http\Client
      */
     public function getHttpClient()
     {
@@ -46,32 +57,11 @@ abstract class AbstractHttpRequestDispatcher
 
 
     /**
-     * @param \Zend\Http\Client $httpClient
+     * @param Http\Client $httpClient
      */
-    public function setHttpClient(\Zend\Http\Client $httpClient)
+    public function setHttpClient(Http\Client $httpClient)
     {
         $this->httpClient = $httpClient;
-    }
-
-
-    /**
-     * @return ErrorFactoryInterface
-     */
-    public function getErrorFactory()
-    {
-        if (! $this->errorFactory instanceof ErrorFactoryInterface) {
-            $this->errorFactory = new ErrorFactory();
-        }
-        return $this->errorFactory;
-    }
-
-
-    /**
-     * @param ErrorFactoryInterface $errorFactory
-     */
-    public function setErrorFactory($errorFactory)
-    {
-        $this->errorFactory = $errorFactory;
     }
 
 
@@ -99,12 +89,14 @@ abstract class AbstractHttpRequestDispatcher
     /**
      * Sends the HTTP request and returns the response.
      * 
-     * @param \Zend\Http\Request $httpRequest
+     * @param Http\Request $httpRequest
      * @throws HttpClientException
-     * @return \Zend\Http\Response
+     * @return Http\Response
      */
-    public function sendHttpRequest(\Zend\Http\Request $httpRequest)
+    public function sendHttpRequest(Http\Request $httpRequest)
     {
+        $this->setLastHttpRequest($httpRequest);
+        
         try {
             $httpResponse = $this->httpClient->send($httpRequest);
         } catch (\Exception $e) {
@@ -112,6 +104,31 @@ abstract class AbstractHttpRequestDispatcher
                 sprintf("Exception during HTTP request: [%s] %s", get_class($e), $e->getMessage()));
         }
         
+        $this->setLastHttpResponse($httpResponse);
         return $httpResponse;
+    }
+
+
+    public function getLastHttpRequest()
+    {
+        return $this->lastHttpRequest;
+    }
+
+
+    public function getLastHttpResponse()
+    {
+        return $this->lastHttpResponse;
+    }
+
+
+    protected function setLastHttpRequest(Http\Request $httpRequest)
+    {
+        $this->lastHttpRequest = $httpRequest;
+    }
+
+
+    protected function setLastHttpResponse(Http\Response $httpResponse)
+    {
+        $this->lastHttpResponse = $httpResponse;
     }
 }
