@@ -123,7 +123,7 @@ class ResponseHandler extends AbstractResponseHandler
         }
         
         try {
-            $responseData = $this->getJsonCoder()->decode($httpResponse->getContent());
+            $responseData = $this->getJsonCoder()->decode($httpResponse->getBody());
         } catch (\Exception $e) {
             throw new InvalidResponseFormatException('The HTTP response does not contain valid JSON', null, $e);
         }

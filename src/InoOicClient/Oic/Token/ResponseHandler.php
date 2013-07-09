@@ -89,7 +89,7 @@ class ResponseHandler extends AbstractResponseHandler
         $decodeException = null;
         
         try {
-            $responseData = $this->getJsonCoder()->decode($httpResponse->getContent());
+            $responseData = $this->getJsonCoder()->decode($httpResponse->getBody());
         } catch (\Exception $e) {
             $decodeException = $e;
         }
