@@ -7,6 +7,9 @@ use InoOicClient\Oic\Exception\HttpClientException;
 use Zend\Http;
 
 
+/**
+ * Abstract dispatcher class for accessing server endpoints such as /token and /userinfo.
+ */
 abstract class AbstractHttpRequestDispatcher
 {
 
@@ -109,24 +112,44 @@ abstract class AbstractHttpRequestDispatcher
     }
 
 
+    /**
+     * Returns the last HTTP request sent to the server.
+     * 
+     * @return Http\Request
+     */
     public function getLastHttpRequest()
     {
         return $this->lastHttpRequest;
     }
 
 
+    /**
+     * Returns the last HTTP response sent from the server.
+     * 
+     * @return Http\Response
+     */
     public function getLastHttpResponse()
     {
         return $this->lastHttpResponse;
     }
 
 
+    /**
+     * Sets the last HTTP request sent to the server.
+     * 
+     * @param Http\Request $httpRequest
+     */
     protected function setLastHttpRequest(Http\Request $httpRequest)
     {
         $this->lastHttpRequest = $httpRequest;
     }
 
 
+    /**
+     * Sets the last HTTP response sent from the server.
+     * 
+     * @param Http\Response $httpResponse
+     */
     protected function setLastHttpResponse(Http\Response $httpResponse)
     {
         $this->lastHttpResponse = $httpResponse;
