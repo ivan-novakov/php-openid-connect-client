@@ -6,3 +6,4 @@ composer.lock
 public/config.php
 public/google/config.php
 public/github/config.php
+public/facebook/config.php
