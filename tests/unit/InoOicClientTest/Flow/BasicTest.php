@@ -181,6 +181,82 @@ class BasicTest extends \PHPUnit_Framework_Testcase
     }
 
 
+    public function testProcessWithAuthorizationException()
+    {
+        $this->setExpectedException('InoOicClient\Flow\Exception\AuthorizationException');
+        
+        $flow = $this->getMockBuilder('InoOicClient\Flow\Basic')
+            ->setMethods(array(
+            'getAuthorizationCode'
+        ))
+            ->getMock();
+        
+        $flow->expects($this->once())
+            ->method('getAuthorizationCode')
+            ->will($this->throwException(new \Exception()));
+        
+        $flow->process();
+    }
+
+
+    public function testProcessWithTokenRequestException()
+    {
+        $this->setExpectedException('InoOicClient\Flow\Exception\TokenRequestException');
+        
+        $code = '123';
+        
+        $flow = $this->getMockBuilder('InoOicClient\Flow\Basic')
+            ->setMethods(array(
+            'getAuthorizationCode',
+            'getAccessToken'
+        ))
+            ->getMock();
+        
+        $flow->expects($this->once())
+            ->method('getAuthorizationCode')
+            ->will($this->returnValue($code));
+        
+        $flow->expects($this->once())
+            ->method('getAccessToken')
+            ->with($code)
+            ->will($this->throwException(new \Exception()));
+        
+        $flow->process();
+    }
+
+
+    public function testProcessWithUserInfoRequestException()
+    {
+        $this->setExpectedException('InoOicClient\Flow\Exception\UserInfoRequestException');
+        
+        $code = '123';
+        $token = 'abc';
+        
+        $flow = $this->getMockBuilder('InoOicClient\Flow\Basic')
+            ->setMethods(
+            array(
+                'getAuthorizationCode',
+                'getAccessToken',
+                'getUserInfo'
+            ))
+            ->getMock();
+        
+        $flow->expects($this->once())
+            ->method('getAuthorizationCode')
+            ->will($this->returnValue($code));
+        $flow->expects($this->once())
+            ->method('getAccessToken')
+            ->with($code)
+            ->will($this->returnValue($token));
+        $flow->expects($this->once())
+            ->method('getUserInfo')
+            ->with($token)
+            ->will($this->throwException(new \Exception()));
+        
+        $flow->process();
+    }
+
+
     public function testCreateAuthorizationRequest()
     {
         $scope = array(

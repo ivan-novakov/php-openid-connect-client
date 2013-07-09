@@ -75,9 +75,26 @@ class Basic extends AbstractFlow
      */
     public function process()
     {
-        $authorizationCode = $this->getAuthorizationCode();
-        $accessToken = $this->getAccessToken($authorizationCode);
-        return $this->getUserInfo($accessToken);
+        try {
+            $authorizationCode = $this->getAuthorizationCode();
+        } catch (\Exception $e) {
+            throw new Exception\AuthorizationException(
+                sprintf("Exception during authorization: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+        }
+        
+        try {
+            $accessToken = $this->getAccessToken($authorizationCode);
+        } catch (\Exception $e) {
+            throw new Exception\TokenRequestException(
+                sprintf("Exception during token request: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+        }
+        
+        try {
+            return $this->getUserInfo($accessToken);
+        } catch (\Exception $e) {
+            throw new Exception\UserInfoRequestException(
+                sprintf("Exception during user info request: [%s] %s", get_class($e), $e->getMessage()), null, $e);
+        }
     }
 
 
