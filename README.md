@@ -7,7 +7,7 @@ The purpose of the library is to provide tools and building blocks for creating 
 * flexible and extensible
 * dependency injection approach
 * covered with unit tests
-* uses parts of the Zend Framework 2
+* based on parts of the Zend Framework 2
 
 
 ## Compatibility
@@ -21,6 +21,10 @@ The library jas been tested successfully with the following identity providers:
 ## Requirements
 
 * Zend Framework >= 2.2.1
+
+## Documentation
+
+* [API docs](http://debug.cz/apidoc/php-openid-connect-client/)
 
 ## Installation
 
