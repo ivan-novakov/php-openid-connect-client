@@ -9,7 +9,7 @@ class SecretBasic extends AbstractSecretAuthenticator
 
     public function setAuth(\Zend\Http\Request $httpRequest, $clientId, $clientSecret)
     {
-        $httpRequest->getHeaders()->addHeaderLine('Authorization', $this->encode($clientId, $clientSecret));
+        $httpRequest->getHeaders()->addHeaderLine('Authorization', 'Basic ' . $this->encode($clientId, $clientSecret));
     }
 
 
