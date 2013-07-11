@@ -32,7 +32,9 @@ The library jas been tested successfully with the following identity providers:
 
 Add the following requirement to your `composer.json` file:
 
-    "require": "ivan-novakov/php-openid-connect-client"
+    "require":  {
+		"ivan-novakov/php-openid-connect-client": "dev-master"
+	}
 
 ### Without composer
 
