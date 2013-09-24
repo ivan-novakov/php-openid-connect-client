@@ -14,7 +14,8 @@ class SecretBasicTest extends \PHPUnit_Framework_Testcase
         $clientId = '123';
         $secret = 'abc';
         
-        $authString = 'base64 string';
+        $authString = 'base64_string';
+        $authHeaderValue = 'Basic ' . $authString;
         
         $authenticator = $this->getMockBuilder('InoOicClient\Client\Authenticator\SecretBasic')
             ->setMethods(array(
@@ -30,7 +31,7 @@ class SecretBasicTest extends \PHPUnit_Framework_Testcase
         $headers = $this->getMock('Zend\Http\Headers');
         $headers->expects($this->once())
             ->method('addHeaderLine')
-            ->with('Authorization', $authString);
+            ->with('Authorization', $authHeaderValue);
         
         $httpRequest = $this->getMock('Zend\Http\Request');
         $httpRequest->expects($this->once())
