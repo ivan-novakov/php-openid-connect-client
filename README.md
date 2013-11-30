@@ -1,5 +1,7 @@
 # OpenID Connect (OAuth2) Client Library
 
+[![Dependency Status](https://www.versioneye.com/user/projects/529a0143632bac39c900003d/badge.png)](https://www.versioneye.com/user/projects/529a0143632bac39c900003d)
+
 The purpose of the library is to provide tools and building blocks for creating clients using delegated authentication/authorization based on the [OAuth2](http://oauth.net/2/) protocol with emphasis on the [OpenID Connect](https://openid.net/connect/) specification.
 
 ## Features
