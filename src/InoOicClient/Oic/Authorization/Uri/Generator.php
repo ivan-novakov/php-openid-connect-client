@@ -22,6 +22,24 @@ class Generator
 
 
     /**
+     * @return array
+     */
+    public function getRequiredParams()
+    {
+        return $this->requiredParams;
+    }
+
+
+    /**
+     * @param array  $requiredParams
+     */
+    public function setRequiredParams(array $requiredParams)
+    {
+        $this->requiredParams = $requiredParams;
+    }
+
+
+    /**
      * Generates an URI representing the authorization request.
      *
      * @param Request $request
