@@ -5,7 +5,7 @@ namespace InoOicClientTest\Client;
 use InoOicClient\Client\AuthenticationInfo;
 
 
-class AuthenticationInfoTest extends \PHPUnit_Framework_Testcase
+class AuthenticationInfoTest extends \PHPUnit_Framework_TestCase
 {
 
 
