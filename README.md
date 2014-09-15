@@ -14,7 +14,7 @@ The purpose of the library is to provide tools and building blocks for creating 
 
 ## Compatibility
 
-The library jas been tested successfully with the following identity providers:
+The library has been tested successfully with the following identity providers:
 
 - [Github](http://developer.github.com/v3/oauth/)
 - [Google](https://developers.google.com/accounts/docs/OAuth2Login)
