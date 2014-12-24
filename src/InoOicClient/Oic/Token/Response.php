@@ -28,6 +28,7 @@ class Response extends AbstractEntity
         Param::TOKEN_TYPE,
         Param::REFRESH_TOKEN,
         Param::EXPIRES_IN,
-        Param::ID_TOKEN
+        Param::ID_TOKEN,
+        Param::SCOPE,
     );
 }

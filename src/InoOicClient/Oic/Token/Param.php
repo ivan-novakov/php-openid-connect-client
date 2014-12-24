@@ -31,4 +31,6 @@ class Param
     const REFRESH_TOKEN = 'refresh_token';
 
     const ID_TOKEN = 'id_token';
+
+    const SCOPE = 'scope';
 }
