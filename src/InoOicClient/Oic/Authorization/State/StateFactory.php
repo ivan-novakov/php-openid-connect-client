@@ -2,8 +2,6 @@
 
 namespace InoOicClient\Oic\Authorization\State;
 
-use Zend\Crypt\Hash;
-
 
 class StateFactory implements StateFactoryInterface
 {
