@@ -158,8 +158,9 @@ abstract class AbstractEntity
      */
     protected function setProperty($name, $value)
     {
-        $this->checkAllowedProperty($name);
-        $this->getProperties()->set($name, $value);
+        if ($this->isAllowedProperty($name)) {
+            $this->getProperties()->set($name, $value);
+        }
     }
 
 
