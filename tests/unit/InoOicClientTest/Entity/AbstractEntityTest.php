@@ -126,19 +126,18 @@ class AbstractEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testSetUnknownProperty()
     {
-        $this->setExpectedException('InoOicClient\Entity\Exception\UnknownPropertyException');
-        
         $entity = new \AbstractEntitySubclass();
         $entity->setBar('something');
+        
+        $this->assertNull($entity->getBar());
     }
 
 
     public function testGetUnknownProperty()
     {
-        $this->setExpectedException('InoOicClient\Entity\Exception\UnknownPropertyException');
-        
         $entity = new \AbstractEntitySubclass();
-        $entity->getBar();
+        
+        $this->assertNull($entity->getBar());
     }
 
 
