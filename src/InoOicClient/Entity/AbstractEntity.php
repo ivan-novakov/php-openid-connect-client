@@ -103,11 +103,10 @@ abstract class AbstractEntity
         $values = array();
         foreach ($this->getProperties() as $name => $value) {
             $getterName = $this->createGetterName($name);
-            $values[$name] = call_user_func_array(
-                array(
-                    $this,
-                    $getterName
-                ), array());
+            $values[$name] = call_user_func_array(array(
+                $this,
+                $getterName
+            ), array());
         }
         
         return $values;
@@ -127,13 +126,12 @@ abstract class AbstractEntity
             
             $updateMethod = 'update' . $methodFragment;
             if (method_exists($this, $updateMethod)) {
-                $value = call_user_func_array(
-                    array(
-                        $this,
-                        $updateMethod
-                    ), array(
-                        $value
-                    ));
+                $value = call_user_func_array(array(
+                    $this,
+                    $updateMethod
+                ), array(
+                    $value
+                ));
             }
             
             $propertyName = $this->getPropertyMapper()->camelCaseToProperty($methodFragment);
@@ -172,7 +170,10 @@ abstract class AbstractEntity
      */
     protected function getProperty($name, $default = null)
     {
-        $this->checkAllowedProperty($name);
+        if (! $this->isAllowedProperty($name)) {
+            return null;
+        }
+        
         return $this->getProperties()->get($name, $default);
     }
 
