@@ -139,6 +139,7 @@ abstract class AbstractHttpRequestDispatcher
     public function sendHttpRequest(Http\Request $httpRequest)
     {
         $this->setLastHttpRequest($httpRequest);
+        $this->httpClient->setOptions($this->options->get(self::OPT_HTTP_OPTIONS, array()));
         
         try {
             $httpResponse = $this->httpClient->send($httpRequest);
