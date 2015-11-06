@@ -15,6 +15,7 @@ class ResponseTest extends \PHPUnit_Framework_Testcase
         $tokenType = 'bearer';
         $refreshToken = '5678';
         $expiresIn = 1800;
+        $scope = 'foo bar';
         $idToken = 'abcde';
         
         $response = new Response();
@@ -22,12 +23,14 @@ class ResponseTest extends \PHPUnit_Framework_Testcase
         $response->setTokenType($tokenType);
         $response->setRefreshToken($refreshToken);
         $response->setExpiresIn($expiresIn);
+        $response->setScope($scope);
         $response->setIdToken($idToken);
         
         $this->assertSame($accessToken, $response->getAccessToken());
         $this->assertSame($tokenType, $response->getTokenType());
         $this->assertSame($refreshToken, $response->getRefreshToken());
         $this->assertSame($expiresIn, $response->getExpiresIn());
+        $this->assertSame($scope, $response->getScope());
         $this->assertSame($idToken, $response->getIdToken());
     }
 }
