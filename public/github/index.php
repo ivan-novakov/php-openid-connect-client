@@ -1,7 +1,7 @@
 <?php
 use InoOicClient\Flow\Basic;
 
-require __DIR__ . '/../../init_autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 $config = require __DIR__ . '/config.php';
 
@@ -29,4 +29,9 @@ if (! isset($_GET['redirect'])) {
         echo "<br>";
         _dump($flow->getTokenDispatcher()->getLastHttpResponse()->getBody());
     }
+}
+
+function _dump($value)
+{
+    error_log(print_r($value, true));
 }
