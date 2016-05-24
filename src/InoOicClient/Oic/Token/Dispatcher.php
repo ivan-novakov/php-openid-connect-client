@@ -30,7 +30,7 @@ class Dispatcher extends AbstractHttpRequestDispatcher
     public function getHttpRequestBuilder()
     {
         if (! $this->httpRequestBuilder instanceof HttpRequestBuilder) {
-            $this->httpRequestBuilder = new HttpRequestBuilder($this->options->get(self::OPT_HTTP_OPTIONS, array()));
+            $this->httpRequestBuilder = new HttpRequestBuilder();
         }
         return $this->httpRequestBuilder;
     }
