@@ -22,11 +22,7 @@ The library has been tested successfully with the following identity providers:
 
 ## Requirements
 
-* Zend Framework >= 2.2.1
-
-## Documentation
-
-* [API docs](http://debug.cz/apidoc/php-openid-connect-client/)
+* Zend Framework >= 2.2.1 (resolved in composer.json)
 
 ## Installation
 
@@ -229,8 +225,7 @@ OAuth2:
 
 ## License
 
-- [BSD-3-Clause](http://debug.cz/license/bsd-3-clause)
-
+- BSD 3-Clause
 
 ## Author
 
