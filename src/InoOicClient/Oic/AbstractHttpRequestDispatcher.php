@@ -2,12 +2,12 @@
 
 namespace InoOicClient\Oic;
 
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ArrayUtils;
 
-use Zend\Stdlib\Parameters;
+use Laminas\Stdlib\Parameters;
 use InoOicClient\Json\Coder;
 use InoOicClient\Oic\Exception\HttpClientException;
-use Zend\Http;
+use Laminas\Http;
 
 
 /**

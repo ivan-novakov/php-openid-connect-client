@@ -13,7 +13,7 @@ abstract class AbstractSecretAuthenticator extends AbstractAuthenticator
      * {@inhertidoc}
      * @see \InoOicClient\Client\Authenticator\AuthenticatorInterface::configureHttpRequest()
      */
-    public function configureHttpRequest(\Zend\Http\Request $httpRequest)
+    public function configureHttpRequest(\Laminas\Http\Request $httpRequest)
     {
         $secret = $this->params->get(self::PARAM_CLIENT_SECRET);
         if (! $secret) {
@@ -24,5 +24,5 @@ abstract class AbstractSecretAuthenticator extends AbstractAuthenticator
     }
 
 
-    abstract public function setAuth(\Zend\Http\Request $httpRequest, $clientId, $clientSecret);
+    abstract public function setAuth(\Laminas\Http\Request $httpRequest, $clientId, $clientSecret);
 }

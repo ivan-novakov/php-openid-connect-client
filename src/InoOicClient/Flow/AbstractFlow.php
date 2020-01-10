@@ -8,9 +8,9 @@ use InoOicClient\Oic\Token;
 use InoOicClient\Oic\UserInfo;
 use InoOicClient\Oic\Authorization\State\Manager;
 use InoOicClient\Http\ClientFactory as HttpClientFactory;
-use Zend\Http;
-use Zend\Stdlib\Parameters;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Http;
+use Laminas\Stdlib\Parameters;
+use Laminas\Stdlib\ArrayUtils;
 
 
 abstract class AbstractFlow

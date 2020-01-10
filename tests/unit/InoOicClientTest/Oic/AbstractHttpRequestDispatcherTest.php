@@ -11,7 +11,7 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
 
     public function setUp()
     {
-        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpClient = $this->getMock('Laminas\Http\Client');
         $this->dispatcher = $this->getMockBuilder('InoOicClient\Oic\AbstractHttpRequestDispatcher')
             ->setConstructorArgs(array(
             $httpClient
@@ -22,7 +22,7 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
 
     public function testConstructor()
     {
-        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpClient = $this->getMock('Laminas\Http\Client');
         $options = array(
             'foo' => 'bar'
         );
@@ -53,8 +53,8 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
 
     public function testSetHttpClient()
     {
-        $httpClientOne = $this->getMock('Zend\Http\Client');
-        $httpClientTwo = $this->getMock('Zend\Http\Client');
+        $httpClientOne = $this->getMock('Laminas\Http\Client');
+        $httpClientTwo = $this->getMock('Laminas\Http\Client');
         
         $dispatcher = $this->getMockBuilder('InoOicClient\Oic\AbstractHttpRequestDispatcher')
             ->setConstructorArgs(array(
@@ -88,8 +88,8 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
     {
         $this->setExpectedException('InoOicClient\Oic\Exception\HttpClientException');
         
-        $httpRequest = $this->getMock('Zend\Http\Request');
-        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
+        $httpClient = $this->getMock('Laminas\Http\Client');
         $httpClient->expects($this->once())
             ->method('send')
             ->with($httpRequest)
@@ -104,9 +104,9 @@ class AbstractHttpRequestDispatcherTest extends \PHPUnit_Framework_Testcase
 
     public function testSendHttpRequest()
     {
-        $httpRequest = $this->getMock('Zend\Http\Request');
-        $httpResponse = $this->getMock('Zend\Http\Response');
-        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
+        $httpResponse = $this->getMock('Laminas\Http\Response');
+        $httpClient = $this->getMock('Laminas\Http\Client');
         $httpClient->expects($this->once())
             ->method('send')
             ->with($httpRequest)

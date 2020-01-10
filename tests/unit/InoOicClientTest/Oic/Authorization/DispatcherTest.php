@@ -3,7 +3,7 @@
 namespace InoOicClientTest\Oic\Authorization;
 
 use InoOicClient\Oic\Exception\ErrorResponseException;
-use Zend\Stdlib\Parameters;
+use Laminas\Stdlib\Parameters;
 use InoOicClient\Oic\Authorization\Dispatcher;
 
 
@@ -299,7 +299,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     protected function createHttpRequestMock($queryParams = array())
     {
-        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
         $httpRequest->expects($this->once())
             ->method('getQuery')
             ->will($this->returnValue(new Parameters($queryParams)));

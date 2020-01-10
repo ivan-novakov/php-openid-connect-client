@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Oic\UserInfo;
 
-use Zend\Http;
+use Laminas\Http;
 use InoOicClient\Json\Coder;
 use InoOicClient\Oic\ErrorFactoryInterface;
 use InoOicClient\Oic\Exception\InvalidResponseFormatException;

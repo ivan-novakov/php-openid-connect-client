@@ -146,7 +146,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     protected function createHttpClientMock($httpRequest = null, $httpRespone = null, $throwException = false)
     {
-        $client = $this->getMock('Zend\Http\Client');
+        $client = $this->getMock('Laminas\Http\Client');
         
         return $client;
     }
@@ -154,14 +154,14 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     protected function createHttpRequestMock()
     {
-        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
         return $httpRequest;
     }
 
 
     protected function createHttpResponseMock()
     {
-        $httpResponse = $this->getMock('Zend\Http\Response');
+        $httpResponse = $this->getMock('Laminas\Http\Response');
         return $httpResponse;
     }
 

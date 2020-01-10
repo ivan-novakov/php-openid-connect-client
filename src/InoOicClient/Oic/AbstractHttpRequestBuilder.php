@@ -2,9 +2,9 @@
 
 namespace InoOicClient\Oic;
 
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ArrayUtils;
 
-use Zend\Stdlib\Parameters;
+use Laminas\Stdlib\Parameters;
 
 
 abstract class AbstractHttpRequestBuilder

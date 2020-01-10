@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Json;
 
-use Zend\Json\Json;
+use Laminas\Json\Json;
 
 /**
  * The class handles JSON encoding/decoding.

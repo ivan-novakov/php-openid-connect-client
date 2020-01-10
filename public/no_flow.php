@@ -8,7 +8,7 @@ use InoOicClient\Client\ClientInfo;
 use InoOicClient\Oic\Authorization\State\Manager;
 use InoOicClient\Oic\Exception\ErrorResponseException;
 use InoOicClient\Oic\Authorization\Exception\StateException;
-use Zend\Http\Client;
+use Laminas\Http\Client;
 require __DIR__ . '/../init_autoload.php';
 
 $config = require __DIR__ . '/config.php';
@@ -63,7 +63,7 @@ if (! isset($_GET['redirect'])) {
                 $userInfoResponse = $userInfoDispatcher->sendUserInfoRequest($userInfoRequest);
                 _dump($userInfoResponse->getClaims());
                 printf("User info: %s", 
-                    \Zend\Json\Json::encode($userInfoResponse->getClaims(), \Zend\Json\Json::TYPE_ARRAY));
+                    \Laminas\Json\Json::encode($userInfoResponse->getClaims(), \Laminas\Json\Json::TYPE_ARRAY));
             } catch (\Exception $e) {
                 printf("Error: [%s] %s<br>", get_class($e), $e->getMessage());
                 _dump("$e");

@@ -1,7 +1,7 @@
 <?php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
-use Zend\Http\Client;
+use Laminas\Http\Client;
 require __DIR__ . '/../init_autoload.php';
 
 $client = _createHttpClient();

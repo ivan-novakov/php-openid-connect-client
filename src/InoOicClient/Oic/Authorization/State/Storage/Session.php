@@ -3,7 +3,7 @@
 namespace InoOicClient\Oic\Authorization\State\Storage;
 
 use InoOicClient\Oic\Authorization\State\State;
-use Zend\Session\Container;
+use Laminas\Session\Container;
 
 
 class Session implements StorageInterface

@@ -83,7 +83,7 @@ class ResponseHandler extends AbstractResponseHandler
      * {@inheritdoc}
      * @see \InoOicClient\Oic\AbstractResponseHandler::handleResponse()
      */
-    public function handleResponse(\Zend\Http\Response $httpResponse)
+    public function handleResponse(\Laminas\Http\Response $httpResponse)
     {
         $responseData = null;
         $decodeException = null;

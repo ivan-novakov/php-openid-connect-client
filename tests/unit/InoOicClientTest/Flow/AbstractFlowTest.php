@@ -210,7 +210,7 @@ class AbstractFlowTest extends \PHPUnit_Framework_Testcase
 
     protected function createHttpClientMock()
     {
-        $httpClient = $this->getMock('Zend\Http\Client');
+        $httpClient = $this->getMock('Laminas\Http\Client');
         return $httpClient;
     }
 }

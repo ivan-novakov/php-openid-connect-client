@@ -38,7 +38,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
     protected function createSessionContainerMock()
     {
-        $container = $this->getMockBuilder('Zend\Session\Container')
+        $container = $this->getMockBuilder('Laminas\Session\Container')
             ->disableOriginalConstructor()
             ->getMock();
         

@@ -84,6 +84,6 @@ class ClientFactoryTest extends \PHPUnit_Framework_Testcase
             ->will($this->returnValue($mergedOptions));
         
         $httpClient = $factory->createHttpClient($options);
-        $this->assertInstanceOf('Zend\Http\Client', $httpClient);
+        $this->assertInstanceOf('Laminas\Http\Client', $httpClient);
     }
 }

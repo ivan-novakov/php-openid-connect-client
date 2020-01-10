@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Oic\UserInfo;
 
-use Zend\Http;
+use Laminas\Http;
 use InoOicClient\Oic\Exception\HttpRequestBuilderException;
 use InoOicClient\Oic\Exception\HttpClientException;
 use InoOicClient\Oic\Exception\ErrorResponseException;

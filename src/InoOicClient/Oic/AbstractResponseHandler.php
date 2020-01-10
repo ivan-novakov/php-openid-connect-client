@@ -100,7 +100,7 @@ abstract class AbstractResponseHandler
     /**
      * Parses the HTTP response.
      * 
-     * @param \Zend\Http\Response $httpResponse
+     * @param \Laminas\Http\Response $httpResponse
      */
-    abstract public function handleResponse(\Zend\Http\Response $httpResponse);
+    abstract public function handleResponse(\Laminas\Http\Response $httpResponse);
 }
