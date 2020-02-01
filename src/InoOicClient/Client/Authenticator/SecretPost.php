@@ -9,7 +9,7 @@ class SecretPost extends AbstractSecretAuthenticator
 {
 
 
-    public function setAuth(\Zend\Http\Request $httpRequest, $clientId, $clientSecret)
+    public function setAuth(\Laminas\Http\Request $httpRequest, $clientId, $clientSecret)
     {
         $postParams = $httpRequest->getPost();
         $postParams->set(Param::CLIENT_ID, $clientId);

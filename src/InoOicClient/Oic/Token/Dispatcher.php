@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Oic\Token;
 
-use Zend\Http;
+use Laminas\Http;
 use InoOicClient\Oic\Exception\ErrorResponseException;
 use InoOicClient\Oic\AbstractHttpRequestDispatcher;
 use InoOicClient\Oic\Exception\HttpRequestBuilderException;
@@ -70,7 +70,7 @@ class Dispatcher extends AbstractHttpRequestDispatcher
      * Sends a token request.
      * 
      * @param Request $request
-     * @param \Zend\Http\Request $httpRequest
+     * @param \Laminas\Http\Request $httpRequest
      * @throws HttpRequestBuilderException
      * @throws ErrorResponseException
      * @return Response

@@ -38,7 +38,7 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_TestCase
             $headerName => $headerValue
         );
         
-        $headers = $this->getMock('Zend\Http\Headers');
+        $headers = $this->getMock('Laminas\Http\Headers');
         $headers->expects($this->once())
             ->method('addHeaders')
             ->with($headersList);
@@ -57,7 +57,7 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function createHttpRequest($method = null, $headers = null, $endpoint = null)
     {
-        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
         
         if ($method) {
             $httpRequest->expects($this->once())

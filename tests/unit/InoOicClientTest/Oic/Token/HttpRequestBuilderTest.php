@@ -168,7 +168,7 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_Testcase
     protected function createHttpRequestMock($endpoint, $clientId, $redirectUri, $clientInfo, $code, $grantType, $method, 
         $headersList)
     {
-        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
         $httpRequest->expects($this->once())
             ->method('setUri')
             ->with($endpoint);
@@ -183,7 +183,7 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_Testcase
             Param::CODE => $code
         );
         
-        $postVars = $this->getMock('Zend\Stdlib\Parameters');
+        $postVars = $this->getMock('Laminas\Stdlib\Parameters');
         $postVars->expects($this->once())
             ->method('fromArray')
             ->with($postData);
@@ -192,7 +192,7 @@ class HttpRequestBuilderTest extends \PHPUnit_Framework_Testcase
             ->method('getPost')
             ->will($this->returnValue($postVars));
         
-        $headers = $this->getMock('Zend\Http\Headers');
+        $headers = $this->getMock('Laminas\Http\Headers');
         $headers->expects($this->once())
             ->method('addHeaders')
             ->with($headersList);

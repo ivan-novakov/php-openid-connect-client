@@ -5,7 +5,7 @@ namespace InoOicClient\Oic\Token;
 use InoOicClient\Oic\AbstractHttpRequestBuilder;
 use InoOicClient\Client\Authenticator\AuthenticatorFactory;
 use InoOicClient\Client\Authenticator\AuthenticatorFactoryInterface;
-use Zend\Http;
+use Laminas\Http;
 use InoOicClient\Client\ClientInfo;
 
 

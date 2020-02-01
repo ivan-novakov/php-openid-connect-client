@@ -7,7 +7,7 @@ use InoOicClient\Oic\Error;
 use InoOicClient\Oic\Authorization\State;
 use InoOicClient\Oic\ErrorFactoryInterface;
 use InoOicClient\Oic\ErrorFactory;
-use Zend\Http;
+use Laminas\Http;
 
 
 /**

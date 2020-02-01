@@ -2,12 +2,12 @@
 
 namespace InoOicClient\Http;
 
-use Zend\Http\Client;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Http\Client;
+use Laminas\Stdlib\ArrayUtils;
 
 
 /**
- * Creates and configures the Zend\Http\Client.
+ * Creates and configures the Laminas\Http\Client.
  */
 class ClientFactory implements ClientFactoryInterface
 {
@@ -17,7 +17,7 @@ class ClientFactory implements ClientFactoryInterface
      * @var array
      */
     protected $defaultOptions = array(
-        'adapter' => 'Zend\Http\Client\Adapter\Curl',
+        'adapter' => 'Laminas\Http\Client\Adapter\Curl',
         
         'useragent' => 'PHP OpenID Connect Client (https://github.com/ivan-novakov/php-openid-connect-client)',
         'maxredirects' => 2,
@@ -68,7 +68,7 @@ class ClientFactory implements ClientFactoryInterface
      * Creates the HTTP client. The provided options are merged with the default options.
      * 
      * @param array|\Traversable $options
-     * @return \Zend\Http\Client
+     * @return \Laminas\Http\Client
      */
     public function createHttpClient($options = array())
     {

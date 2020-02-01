@@ -20,8 +20,8 @@ class SecretPostTest extends \PHPUnit_Framework_Testcase
          * PHP Fatal error:  Class Mock_ParametersInterface_b9f9c615 must implement interface Traversable as part 
          * of either Iterator or IteratorAggregate in Unknown on line 0
          */
-        //$postParams = $this->getMock('Zend\Stdlib\ParametersInterface');
-        $postParams = $this->getMock('Zend\Stdlib\Parameters');
+        //$postParams = $this->getMock('Laminas\Stdlib\ParametersInterface');
+        $postParams = $this->getMock('Laminas\Stdlib\Parameters');
         
         $postParams->expects($this->at(0))
             ->method('set')
@@ -30,7 +30,7 @@ class SecretPostTest extends \PHPUnit_Framework_Testcase
             ->method('set')
             ->with(Param::CLIENT_SECRET, $clientSecret);
         
-        $httpRequest = $this->getMock('Zend\Http\Request');
+        $httpRequest = $this->getMock('Laminas\Http\Request');
         $httpRequest->expects($this->once())
             ->method('getPost')
             ->will($this->returnValue($postParams));

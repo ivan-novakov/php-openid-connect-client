@@ -2,8 +2,8 @@
 
 namespace InoOicClient\Entity;
 
-use Zend\Filter\Word\CamelCaseToUnderscore;
-use Zend\Filter\Word\UnderscoreToCamelCase;
+use Laminas\Filter\Word\CamelCaseToUnderscore;
+use Laminas\Filter\Word\UnderscoreToCamelCase;
 
 
 class UnderscorePropertyMapper implements PropertyMapperInterface

@@ -2,8 +2,8 @@
 
 namespace InoOicClient\Entity;
 
-use Zend\Stdlib\Parameters;
-use Zend\Stdlib\ArrayObject;
+use Laminas\Stdlib\Parameters;
+use Laminas\Stdlib\ArrayObject;
 
 
 abstract class AbstractEntity

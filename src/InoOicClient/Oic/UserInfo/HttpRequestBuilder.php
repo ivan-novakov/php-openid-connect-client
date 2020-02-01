@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Oic\UserInfo;
 
-use Zend\Http;
+use Laminas\Http;
 use InoOicClient\Oic\Token\Exception\InvalidRequestException;
 use InoOicClient\Client\ClientInfo;
 

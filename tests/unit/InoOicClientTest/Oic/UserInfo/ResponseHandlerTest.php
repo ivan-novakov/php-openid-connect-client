@@ -80,7 +80,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InoOicClient\Oic\Exception\HttpErrorStatusException');
         
-        $httpResponse = new \Zend\Http\Response();
+        $httpResponse = new \Laminas\Http\Response();
         $httpResponse->setStatusCode(500);
         
         $this->handler->handleResponse($httpResponse);
@@ -91,7 +91,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InoOicClient\Oic\Exception\InvalidResponseFormatException');
         
-        $httpResponse = new \Zend\Http\Response();
+        $httpResponse = new \Laminas\Http\Response();
         $httpResponse->setStatusCode(401);
         $httpResponse->getHeaders()->addHeaders(array(
             'WWW-Authenticate' => 'foo'
@@ -105,7 +105,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InoOicClient\Oic\Exception\HttpAuthenticateException');
         
-        $httpResponse = new \Zend\Http\Response();
+        $httpResponse = new \Laminas\Http\Response();
         $httpResponse->setStatusCode(401);
         $httpResponse->getHeaders()->addHeaders(array(
             'WWW-Authenticate' => 'Bearer foo=bar'
@@ -117,7 +117,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testHandleResponseWithServerError()
     {
-        $httpResponse = new \Zend\Http\Response();
+        $httpResponse = new \Laminas\Http\Response();
         $httpResponse->setStatusCode(401);
         $httpResponse->getHeaders()->addHeaders(
             array(
@@ -190,7 +190,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected function createHttpResponseMock($content)
     {
-        $httpResponse = $this->getMock('Zend\Http\Response');
+        $httpResponse = $this->getMock('Laminas\Http\Response');
         
         if ($content) {
             $httpResponse->expects($this->once())

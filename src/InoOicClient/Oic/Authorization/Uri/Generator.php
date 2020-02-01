@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Oic\Authorization\Uri;
 
-use Zend\Uri\Uri;
+use Laminas\Uri\Uri;
 use InoOicClient\Oic\Authorization\Param;
 use InoOicClient\Oic\Authorization\Request;
 

@@ -39,7 +39,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InoOicClient\Oic\Exception\HttpErrorStatusException');
         
-        $httpResponse = new \Zend\Http\Response();
+        $httpResponse = new \Laminas\Http\Response();
         $httpResponse->setStatusCode(500);
         
         $this->handler->handleResponse($httpResponse);
@@ -124,7 +124,7 @@ class ResponseHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected function createHttpResponseMock($content, $isError = false)
     {
-        $httpResponse = $this->getMock('Zend\Http\Response');
+        $httpResponse = $this->getMock('Laminas\Http\Response');
         
         $httpResponse->expects($this->once())
             ->method('isSuccess')

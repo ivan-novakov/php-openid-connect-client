@@ -2,7 +2,7 @@
 
 namespace InoOicClient\Client\Authenticator;
 
-use Zend\Stdlib\Parameters;
+use Laminas\Stdlib\Parameters;
 
 
 abstract class AbstractAuthenticator implements AuthenticatorInterface

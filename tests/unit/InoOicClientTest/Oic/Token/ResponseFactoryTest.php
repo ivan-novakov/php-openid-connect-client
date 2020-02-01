@@ -110,7 +110,7 @@ class ResponseFactoryTest extends \PHPUnit_Framework_Testcase
 
     protected function createHttpResponseMock($content = null)
     {
-        $httpResponse = $this->getMock('Zend\Http\Response');
+        $httpResponse = $this->getMock('Laminas\Http\Response');
         $httpResponse->expects($this->once())
             ->method('getContent')
             ->will($this->returnValue($content));

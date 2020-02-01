@@ -7,5 +7,5 @@ interface AuthenticatorInterface
 {
 
 
-    public function configureHttpRequest(\Zend\Http\Request $httpRequest);
+    public function configureHttpRequest(\Laminas\Http\Request $httpRequest);
 }
