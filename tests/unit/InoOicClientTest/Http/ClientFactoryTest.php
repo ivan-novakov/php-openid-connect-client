@@ -35,7 +35,8 @@ class ClientFactoryTest extends \PHPUnit_Framework_Testcase
             'sub' => array(
                 'subfoo' => 'subbar',
                 'subreplace' => 'subvalue'
-            )
+            ),
+            1 => false
         );
         
         $options = array(
@@ -44,7 +45,8 @@ class ClientFactoryTest extends \PHPUnit_Framework_Testcase
             'sub' => array(
                 'subnew' => 'suboption',
                 'subreplace' => 'subreplacedvalue'
-            )
+            ),
+            1 => true
         );
         
         $merged = array(
@@ -55,7 +57,8 @@ class ClientFactoryTest extends \PHPUnit_Framework_Testcase
                 'subfoo' => 'subbar',
                 'subreplace' => 'subreplacedvalue',
                 'subnew' => 'suboption'
-            )
+            ),
+            1 => true
         );
         
         $this->factory->setDefaultOptions($defaultOptions);
