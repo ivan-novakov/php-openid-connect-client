@@ -60,7 +60,7 @@ class ClientFactory implements ClientFactoryInterface
      */
     public function mergeOptions($options)
     {
-        return ArrayUtils::merge($this->defaultOptions, ArrayUtils::iteratorToArray($options));
+        return ArrayUtils::merge($this->defaultOptions, ArrayUtils::iteratorToArray($options), true);
     }
 
 
